@@ -1,0 +1,503 @@
+- id: '1759027303160'
+  alias: Frigate Motion Detection with LLM Vision Analysis
+  description: Analyzes camera feed with AI when Frigate detects motion
+  triggers:
+  - entity_id:
+    - binary_sensor.front_camera_motion
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: template
+    value_template: '{% set last_triggered = state_attr(this.entity_id, ''last_triggered'')
+      %} {{ last_triggered is none or (now() - last_triggered).total_seconds() > 60
+      }}
+
+      '
+  actions:
+  - delay: 00:00:02
+  - data:
+      remember: false
+      use_memory: false
+      duration: 5
+      max_frames: 3
+      include_filename: false
+      target_width: 1280
+      max_tokens: 500
+      generate_title: false
+      expose_images: false
+      provider: 01K5WP68657EEXH8TFYBFCKBDA
+      image_entity:
+      - '{{ trigger.entity_id.replace(''binary_sensor.'', ''camera.'').replace(''_motion'',
+        '''') }}'
+      message: Summarize what you see, focus on people and animals. If there are people,
+        are they walking down the sidewalk or are they walking towards or away from
+        the house? If you cant see any people or animals, simply respond with no motion
+        detected.
+    response_variable: llm_response
+    action: llmvision.stream_analyzer
+  - data:
+      title: 'Motion Detected: {{ trigger.entity_id.replace(''binary_sensor.'', '''').replace(''_motion'',
+        '''').title() }}'
+      message: '{{ llm_response.response_text }}'
+      data:
+        image: /api/camera_proxy/camera.{{ trigger.entity_id.replace('binary_sensor.',
+          '').replace('_motion', '') }}
+    action: notify.mobile_app_davids_iphone
+  - data:
+      title: AI Motion Analysis
+      message: '**Camera:** {{ trigger.entity_id.replace(''binary_sensor.'', '''').replace(''_motion'',
+        '''').title() }}
+
+        **Time:** {{ now().strftime(''%I:%M %p'') }}
+
+        **Analysis:** {{ llm_response.response_text }}
+
+        '
+      notification_id: motion_{{ trigger.entity_id }}_{{ now().timestamp() | int }}
+    action: persistent_notification.create
+  mode: parallel
+  max: 5
+- id: '1759027944162'
+  alias: AI Event Summary (v1.5.1)
+  description: ''
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      camera_entities:
+      - camera.doorbell
+      motion_sensors:
+      - binary_sensor.doorbell_motion
+      provider: 01K5WP68657EEXH8TFYBFCKBDA
+      model: gemini-2.0-flash
+      max_tokens: 50
+      notify_device:
+      - 4d958055b69a379fa9e54949db37e7e1
+      notification_sticky: false
+      cooldown:
+        hours: 0
+        minutes: 0
+        seconds: 30
+      max_frames: 5
+      use_memory: true
+      condition_notify: []
+      analysis_mode: Live Preview
+      preview_mode: Live Preview
+- id: '1759101438935'
+  alias: AI Front Camera Alerts
+  description: ''
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      camera_entities:
+      - camera.front_camera
+      motion_sensors:
+      - binary_sensor.front_camera_motion
+      provider: 01K5WP68657EEXH8TFYBFCKBDA
+      model: gemini-2.0-flash
+      max_tokens: 50
+      notify_device:
+      - 4d958055b69a379fa9e54949db37e7e1
+      notification_sticky: false
+      cooldown:
+        hours: 0
+        minutes: 0
+        seconds: 30
+      max_frames: 5
+      use_memory: true
+      condition_notify: []
+      analysis_mode: Live Preview
+      preview_mode: Live Preview
+- id: '1760481815883'
+  alias: House Lights When Sun Sets
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 00:10:00
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 82a6604e38c26fc927c56c7ebbeec119
+    entity_id: 4b1547ff269b2496d9cd2e38d3d03da0
+    domain: light
+    brightness_pct: 20
+  - type: turn_on
+    device_id: ed892e0c883287b204c03071f2d8dab6
+    entity_id: 4667203efb417f805b6a1088a5d50f86
+    domain: light
+    brightness_pct: 50
+  mode: single
+- id: '1760481843807'
+  alias: House Lights Off When Sun Rises
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 0
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: 82a6604e38c26fc927c56c7ebbeec119
+    entity_id: 4b1547ff269b2496d9cd2e38d3d03da0
+    domain: light
+  - type: turn_off
+    device_id: ed892e0c883287b204c03071f2d8dab6
+    entity_id: 4667203efb417f805b6a1088a5d50f86
+    domain: light
+  mode: single
+- id: '1760482837120'
+  alias: Turn on Bathroom floor heat in evening
+  description: ''
+  triggers:
+  - trigger: time
+    at: '18:30:00'
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+  conditions: []
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 90
+      hvac_mode: heat
+    target:
+      device_id: 1d5c6422ceab2bf15002e450f28e9a65
+  mode: single
+- id: '1760482868777'
+  alias: Turn off master bathroom floor heat in the evening
+  description: ''
+  triggers:
+  - trigger: time
+    at: '22:00:00'
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+  conditions: []
+  actions:
+  - device_id: 1d5c6422ceab2bf15002e450f28e9a65
+    domain: climate
+    entity_id: f97c41e5f37ba27d20f2b962cec5efb3
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  mode: single
+- id: '1760482929441'
+  alias: Turn off master bathroom floor heat in the morning
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:30:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  conditions: []
+  actions:
+  - device_id: 1d5c6422ceab2bf15002e450f28e9a65
+    domain: climate
+    entity_id: f97c41e5f37ba27d20f2b962cec5efb3
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  mode: single
+- id: '1760482957549'
+  alias: Turn on master bathroom floor heat in the morning
+  description: ''
+  triggers:
+  - trigger: time
+    at: 05:00:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  conditions: []
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 90
+      hvac_mode: heat
+    target:
+      device_id: 1d5c6422ceab2bf15002e450f28e9a65
+  mode: single
+- id: '1760483004082'
+  alias: Turn on floor master bathroom floor heat in the morning (weekend)
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:00:00
+    weekday:
+    - sat
+    - sun
+  conditions: []
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 90
+      hvac_mode: heat
+    target:
+      device_id: 1d5c6422ceab2bf15002e450f28e9a65
+  mode: single
+- id: '1760483048088'
+  alias: Turn off master bathroom floor heat in the morning (weekend)
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:30:00
+    weekday:
+    - sun
+    - sat
+  conditions: []
+  actions:
+  - device_id: 1d5c6422ceab2bf15002e450f28e9a65
+    domain: climate
+    entity_id: f97c41e5f37ba27d20f2b962cec5efb3
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  mode: single
+- id: '1760490840718'
+  alias: turn off master bathroom floor thermostat when manually set below 60 degrees
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - climate.floor_thermostat
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    below: 61
+    attribute: temperature
+  conditions: []
+  actions:
+  - device_id: 1d5c6422ceab2bf15002e450f28e9a65
+    domain: climate
+    entity_id: f97c41e5f37ba27d20f2b962cec5efb3
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  mode: single
+- id: '1767823512240'
+  alias: 'Pico on '
+  description: ''
+  triggers:
+  - device_id: 43a919ae5501f1230281535b2bad6f32
+    domain: lutron_caseta
+    type: press
+    subtype: 'on'
+    metadata: {}
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: eb042aa7d930a5df5359d9c884e66161
+    entity_id: b12502f0d58a061e06d9efeb26d473ed
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1767823609762'
+  alias: Hallway Pico off
+  description: ''
+  triggers:
+  - device_id: 43a919ae5501f1230281535b2bad6f32
+    domain: lutron_caseta
+    type: press
+    subtype: 'off'
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: eb042aa7d930a5df5359d9c884e66161
+    entity_id: b12502f0d58a061e06d9efeb26d473ed
+    domain: light
+  mode: single
+- id: '1767823808609'
+  alias: Hallway Pico Increase Brightness
+  description: ''
+  triggers:
+  - device_id: 43a919ae5501f1230281535b2bad6f32
+    domain: lutron_caseta
+    type: press
+    subtype: raise
+    trigger: device
+  conditions: []
+  actions:
+  - device_id: eb042aa7d930a5df5359d9c884e66161
+    domain: light
+    entity_id: b12502f0d58a061e06d9efeb26d473ed
+    type: brightness_increase
+  mode: single
+- id: '1767823852621'
+  alias: Hallway Pico Decrease Brightness
+  description: ''
+  triggers:
+  - device_id: 43a919ae5501f1230281535b2bad6f32
+    domain: lutron_caseta
+    type: press
+    subtype: lower
+    trigger: device
+  conditions: []
+  actions:
+  - device_id: eb042aa7d930a5df5359d9c884e66161
+    domain: light
+    entity_id: b12502f0d58a061e06d9efeb26d473ed
+    type: brightness_decrease
+  mode: single
+# ------------------------------------------------------------
+# Shopping List - Sync from iCloud
+# ------------------------------------------------------------
+- id: shopping_list_sync_from_icloud
+  alias: Shopping List - Sync from iCloud
+  description: Receives shopping list items from iPhone Shortcut
+  trigger:
+  - platform: webhook
+    webhook_id: shopping_list_sync
+    allowed_methods:
+    - POST
+    local_only: false
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.json.action == ''sync'' }}'
+      sequence:
+      - service: system_log.write
+        data:
+          message: 'Shopping list sync received: {{ trigger.json.items }}'
+          level: info
+      - repeat:
+          for_each: '{{ trigger.json.items }}'
+          sequence:
+          - service: todo.add_item
+            target:
+              entity_id: todo.shopping_list
+            data:
+              item: '{{ repeat.item }}'
+      - service: persistent_notification.create
+        data:
+          title: Shopping List Synced
+          message: '{{ trigger.json.items | length }} items synced from iCloud'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.json.action == ''add'' }}'
+      sequence:
+      - service: todo.add_item
+        target:
+          entity_id: todo.shopping_list
+        data:
+          item: '{{ trigger.json.item }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.json.action == ''clear_and_sync'' }}'
+      sequence:
+      - service: todo.remove_completed_items
+        target:
+          entity_id: todo.shopping_list
+      - repeat:
+          for_each: '{{ trigger.json.items }}'
+          sequence:
+          - service: todo.add_item
+            target:
+              entity_id: todo.shopping_list
+            data:
+              item: '{{ repeat.item }}'
+  mode: single
+# ------------------------------------------------------------
+# Chores List - Sync from iCloud
+# ------------------------------------------------------------
+- id: chores_list_sync_from_icloud
+  alias: Chores List - Sync from iCloud
+  description: Receives chores list items from iPhone Shortcut
+  trigger:
+  - platform: webhook
+    webhook_id: chores_list_sync
+    allowed_methods:
+    - POST
+    local_only: false
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.json.action == ''sync'' }}'
+      sequence:
+      - service: system_log.write
+        data:
+          message: 'Chores list sync received: {{ trigger.json.items }}'
+          level: info
+      - repeat:
+          for_each: '{{ trigger.json.items }}'
+          sequence:
+          - service: todo.add_item
+            target:
+              entity_id: todo.chores
+            data:
+              item: '{{ repeat.item }}'
+      - service: persistent_notification.create
+        data:
+          title: Chores List Synced
+          message: '{{ trigger.json.items | length }} chores synced from iCloud'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.json.action == ''add'' }}'
+      sequence:
+      - service: todo.add_item
+        target:
+          entity_id: todo.chores
+        data:
+          item: '{{ trigger.json.item }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.json.action == ''clear_and_sync'' }}'
+      sequence:
+      - service: todo.remove_completed_items
+        target:
+          entity_id: todo.chores
+      - repeat:
+          for_each: '{{ trigger.json.items }}'
+          sequence:
+          - service: todo.add_item
+            target:
+              entity_id: todo.chores
+            data:
+              item: '{{ repeat.item }}'
+  mode: single
+# ------------------------------------------------------------
+# Wake Alarm - Sync from iPhone Sleep Schedule
+# ------------------------------------------------------------
+- id: wake_alarm_sync_from_iphone
+  alias: Wake Alarm - Sync from iPhone
+  description: Receives wake alarm time from iPhone Sleep Schedule via Shortcut
+  trigger:
+  - platform: webhook
+    webhook_id: wake_alarm_sync
+    allowed_methods:
+    - POST
+    local_only: false
+  action:
+  - service: system_log.write
+    data:
+      message: 'Wake alarm sync received: {{ trigger.json.wake_time }}'
+      level: info
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.iphone_wake_alarm
+    data:
+      datetime: '{{ trigger.json.wake_time }}'
+  - service: persistent_notification.create
+    data:
+      title: Wake Alarm Synced
+      message: 'Wake time set to {{ trigger.json.wake_time }}'
+  mode: single

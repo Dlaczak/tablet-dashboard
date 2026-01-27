@@ -1,0 +1,140 @@
+# ============================================================
+# SHOPPING LIST SYNC AUTOMATIONS
+# ============================================================
+# Add these to your Home Assistant automations.yaml or create
+# via Settings > Automations & Scenes > Create Automation
+# ============================================================
+
+# ------------------------------------------------------------
+# WEBHOOK: Receive shopping list from iPhone
+# ------------------------------------------------------------
+# This automation receives items from iCloud Reminders via
+# an Apple Shortcut and updates the HA todo list
+# ------------------------------------------------------------
+
+automation:
+  - id: shopping_list_sync_from_icloud
+    alias: "Shopping List - Sync from iCloud"
+    description: "Receives shopping list items from iPhone Shortcut"
+    trigger:
+      - platform: webhook
+        webhook_id: shopping_list_sync
+        allowed_methods:
+          - POST
+        local_only: false
+    action:
+      # Clear existing items and add new ones from iCloud
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'sync' }}"
+            sequence:
+              # Log incoming data for debugging
+              - service: system_log.write
+                data:
+                  message: "Shopping list sync received: {{ trigger.json.items }}"
+                  level: info
+
+              # Process each item from the Shortcut
+              - repeat:
+                  for_each: "{{ trigger.json.items }}"
+                  sequence:
+                    - service: todo.add_item
+                      target:
+                        entity_id: todo.shopping_list
+                      data:
+                        item: "{{ repeat.item }}"
+
+              # Send confirmation notification
+              - service: persistent_notification.create
+                data:
+                  title: "Shopping List Synced"
+                  message: "{{ trigger.json.items | length }} items synced from iCloud"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'add' }}"
+            sequence:
+              - service: todo.add_item
+                target:
+                  entity_id: todo.shopping_list
+                data:
+                  item: "{{ trigger.json.item }}"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'clear_and_sync' }}"
+            sequence:
+              # First, get all current items and remove them
+              - service: todo.remove_completed_items
+                target:
+                  entity_id: todo.shopping_list
+
+              # Add items from iCloud
+              - repeat:
+                  for_each: "{{ trigger.json.items }}"
+                  sequence:
+                    - service: todo.add_item
+                      target:
+                        entity_id: todo.shopping_list
+                      data:
+                        item: "{{ repeat.item }}"
+
+# ------------------------------------------------------------
+# SCRIPT: Trigger sync from HA
+# ------------------------------------------------------------
+# This script sends a notification to trigger the iPhone
+# Shortcut for syncing
+# ------------------------------------------------------------
+
+script:
+  sync_shopping_list:
+    alias: "Sync Shopping List"
+    description: "Triggers iPhone to sync shopping list with iCloud"
+    sequence:
+      # Option 1: Send actionable notification to trigger Shortcut
+      - service: notify.mobile_app_YOUR_IPHONE
+        data:
+          title: "Shopping List"
+          message: "Sync requested"
+          data:
+            actions:
+              - action: "SYNC_SHOPPING"
+                title: "Sync Now"
+            shortcut:
+              name: "Sync Shopping List to HA"
+              input: "sync"
+
+      # Option 2: Just send notification as trigger
+      # The Shortcut can be set to run when this notification arrives
+      - service: persistent_notification.create
+        data:
+          title: "Shopping Sync"
+          message: "Sync request sent to iPhone"
+
+  push_shopping_to_icloud:
+    alias: "Push Shopping List to iCloud"
+    description: "Sends HA shopping list to iPhone for iCloud sync"
+    sequence:
+      - service: notify.mobile_app_YOUR_IPHONE
+        data:
+          title: "Shopping List Update"
+          message: "Tap to update iCloud Reminders"
+          data:
+            shortcut:
+              name: "Update iCloud Shopping List"
+              input: >-
+                {{ state_attr('todo.shopping_list', 'items') | map(attribute='summary') | list | to_json }}
+
+# ------------------------------------------------------------
+# WEBHOOK URL FORMAT
+# ------------------------------------------------------------
+# Your webhook URL will be:
+# https://YOUR_HA_URL/api/webhook/shopping_list_sync
+#
+# Example POST body from Shortcut:
+# {
+#   "action": "sync",
+#   "items": ["Milk", "Bread", "Eggs", "Butter"]
+# }
+# ------------------------------------------------------------

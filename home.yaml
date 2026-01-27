@@ -1,0 +1,3593 @@
+title: Home
+path: home
+panel: true
+cards:
+  - type: custom:navbar-card
+    desktop:
+      position: bottom
+      min_width: 768
+      show_labels: true
+    mobile:
+      position: bottom
+      show_labels: true
+    routes:
+      - icon: mdi:home-outline
+        icon_selected: mdi:home-assistant
+        url: /lovelace-homio/home
+        label: Home
+        selected: |
+          [[[
+            if (location.hash == '#living-room') return false;
+            else if (location.hash == '#kitchen') return false;
+            else if (location.hash == '#master-suite') return false;
+            else if (location.hash == '#office') return false;
+            else if (location.hash == '#bedrooms') return false;
+            else if (location.hash == '#basement') return false;
+            else if (location.hash == '#basement-utility') return false;
+            else if (location.hash == '#garage') return false;
+            else if (location.hash == '#outdoors') return false;
+            else return true;
+          ]]]
+      - icon: mdi:sofa-outline
+        icon_selected: mdi:sofa
+        label: Rooms
+        selected: |
+          [[[
+            if (location.hash == '#living-room') return true;
+            else if (location.hash == '#kitchen') return true;
+            else if (location.hash == '#master-suite') return true;
+            else if (location.hash == '#office') return true;
+            else if (location.hash == '#bedrooms') return true;
+            else if (location.hash == '#basement') return true;
+            else if (location.hash == '#basement-utility') return true;
+            else if (location.hash == '#garage') return true;
+            else if (location.hash == '#outdoors') return true;
+            else return false;
+          ]]]
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:sofa-outline
+            url: /lovelace-homio/home#living-room
+            label: Living Room
+          - icon: mdi:silverware-variant
+            url: /lovelace-homio/home#kitchen
+            label: Kitchen
+          - icon: mdi:bed-king-outline
+            url: /lovelace-homio/home#master-suite
+            label: Master Suite
+          - icon: mdi:bed-outline
+            url: /lovelace-homio/home#bedrooms
+            label: Bedrooms
+          - icon: mdi:monitor
+            url: /lovelace-homio/home#office
+            label: Office
+          - icon: mdi:stairs-down
+            url: /lovelace-homio/home#basement
+            label: Basement
+          - icon: mdi:tools
+            url: /lovelace-homio/home#basement-utility
+            label: Basement Utility
+      - icon: mdi:music
+        url: /lovelace-homio/music
+        label: Music
+        badge:
+          show: >
+            [[[ return states['media_player.living_room'].state === 'playing'
+            ]]]
+          color: var(--green-color)
+      - icon: mdi:shield-outline
+        icon_selected: mdi:security
+        url: /lovelace-homio/security
+        label: Security
+        badge:
+          show: >
+            [[[ return states['binary_sensor.door_sensor_door'].state === 'on'
+            || states['binary_sensor.door_sensor_door_2'].state === 'on' ]]]
+          color: var(--red-color)
+      - icon: mdi:weather-partly-cloudy
+        url: /lovelace-homio/weather
+        label: Weather
+        selected: |
+          [[[
+            return location.pathname.includes('/weather');
+          ]]]
+      - icon: mdi:dots-horizontal
+        label: More
+        badge:
+          show: |
+            [[[
+              if (states['update.home_assistant_core_update'].state == "on") return true;
+              else if (states['update.home_assistant_supervisor_update'].state == "on") return true;
+              else if (states['sensor.ipad_battery_level'].state < 20) return true;
+              else return false;
+            ]]]
+          color: var(--red-color)
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:server-outline
+            url: /lovelace-homio/server
+            label: Server
+            badge:
+              show: |
+                [[[
+                  if (states['sensor.ipad_battery_level'].state < 20) return true;
+                  else return false;
+                ]]]
+              color: var(--red-color)
+          - icon: mdi:cart
+            url: /dashboard-bring/home
+            label: Shopping List
+            badge:
+              show: |
+                [[[ return states['todo.shopping_list'].state > 0 ]]]
+              color: var(--red-color)
+              count: |
+                [[[ return states['todo.shopping_list'].state ]]]
+          - icon: mdi:cog
+            url: /config/dashboard
+            label: Settings
+            badge:
+              show: >
+                [[[ return states['update.home_assistant_core_update'].state ===
+                'on' ]]]
+              color: var(--red-color)
+          - icon: mdi:hammer
+            url: /developer-tools/yaml
+            label: Developer Tools
+          - icon: mdi:printer-3d
+            url: /lovelace-homio/printers
+            label: Printers
+    styles: |
+      .navbar {
+        --navbar-primary-color: var(--purple-color);
+        background: var(--contrast2);
+      }
+    view_layout:
+      grid-area: Sidebar
+  - type: vertical-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:button-card
+            styles:
+              grid:
+                - grid-template-areas: "'item6 item1 item3 item2 item4 item5 item7 item8'"
+                - grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+              card:
+                - padding: 5px 0px
+                - background: none
+              custom_fields:
+                item1:
+                  - justify-self: center
+                item2:
+                  - justify-self: center
+                item3:
+                  - justify-self: center
+                item4:
+                  - justify-self: center
+                item5:
+                  - justify-self: center
+                item6:
+                  - justify-self: center
+                item7:
+                  - justify-self: center
+                item8:
+                  - justify-self: center
+            custom_fields:
+              item1:
+                card:
+                  type: custom:button-card
+                  icon: mdi:thermometer
+                  name: Temperature
+                  label: >-
+                    [[[ return states["sensor.living_room_temperature"].state +
+                    "°F" ]]]
+                  show_label: true
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: var(--red)
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#climate"
+              item2:
+                card:
+                  type: custom:button-card
+                  icon: mdi:lightning-bolt
+                  name: Energy
+                  label: >-
+                    [[[ return states["sensor.washer_energy_yesterday"].state +
+                    " kWh" ]]]
+                  show_label: true
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: var(--yellow)
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: navigate
+                    navigation_path: energy
+              item3:
+                card:
+                  type: custom:button-card
+                  icon: mdi:water-percent
+                  name: Humidity
+                  label: >-
+                    [[[ return states["sensor.living_room_humidity"].state + "%"
+                    ]]]
+                  show_label: true
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: var(--blue)
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#climate"
+              item4:
+                card:
+                  type: custom:button-card
+                  entity: input_datetime.update_alarm_time_with_service
+                  icon: mdi:alarm
+                  name: Wake
+                  show_label: true
+                  label: |
+                    [[[
+                      const dt = states['input_datetime.update_alarm_time_with_service'];
+                      if (!dt || !dt.state || dt.state === 'unknown') return 'N/A';
+                      const time = dt.state.split(' ')[1];
+                      if (!time) return dt.state;
+                      const [h, m] = time.split(':');
+                      const hour = parseInt(h);
+                      const ampm = hour >= 12 ? 'PM' : 'AM';
+                      const hour12 = hour % 12 || 12;
+                      return hour12 + ':' + m + ' ' + ampm;
+                    ]]]
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: var(--contrast10)
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#alarm"
+              item5:
+                card:
+                  type: custom:button-card
+                  entity: vacuum.p10_pro_ultra
+                  icon: mdi:robot-vacuum-alert
+                  name: Vacuum
+                  label: Error
+                  show_label: true
+                  state:
+                    - value: docked
+                      label: Docked
+                      icon: mdi:robot-vacuum-off
+                      styles:
+                        icon:
+                          - color: var(--contrast10)
+                    - value: cleaning
+                      label: Cleaning
+                      icon: mdi:robot-vacuum
+                      styles:
+                        icon:
+                          - color: var(--blue)
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: var(--red)
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#vacuum"
+                  double_tap_action:
+                    action: more-info
+              item6:
+                card:
+                  type: custom:button-card
+                  entity: weather.forecast_home
+                  name: Home
+                  show_label: true
+                  show_state: true
+                  show_name: false
+                  label: >-
+                    [[[ return
+                    states["weather.forecast_home"].attributes.temperature +
+                    "°F" ]]]
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i s' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: |
+                          [[[
+                            if (states['weather.forecast_home'].state == "partlycloudy") return "var(--contrast15)";
+                            else if (states['weather.forecast_home'].state == "sunny") return "var(--yellow)";
+                            else return "var(--blue)";
+                          ]]]
+                    img_cell:
+                      - width: 20px
+                    state:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#weather"
+                  double_tap_action:
+                    action: more-info
+              item7:
+                card:
+                  type: custom:button-card
+                  entity: alarm_control_panel.alarmo
+                  name: Security
+                  show_label: true
+                  label: |-
+                    [[[
+                      const st = states['alarm_control_panel.alarmo']?.state;
+                      if (!st) return 'Unknown';
+                      if (st === 'triggered') return 'TRIGGERED';
+                      if (st === 'armed_away') return 'Armed';
+                      if (st === 'armed_home') return 'Home';
+                      if (st === 'armed_night') return 'Night';
+                      if (st === 'disarmed') return 'Disarmed';
+                      return 'Arming...';
+                    ]]]
+                  icon: |-
+                    [[[
+                      const st = states['alarm_control_panel.alarmo']?.state;
+                      if (st === 'armed_home') return 'mdi:shield-home-outline';
+                      if (st === 'armed_away') return 'mdi:shield-lock-outline';
+                      if (st === 'triggered') return 'mdi:shield-alert-outline';
+                      if (st === 'armed_night') return 'mdi:shield-moon-outline';
+                      if (st === 'disarmed') return 'mdi:shield-off-outline';
+                      return 'mdi:shield-alert-outline';
+                    ]]]
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 5px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: |-
+                          [[[
+                            const st = states['alarm_control_panel.alarmo']?.state;
+                            if (st === 'armed_home') return 'var(--green)';
+                            if (st === 'armed_away') return 'var(--red)';
+                            if (st === 'triggered') return 'var(--orange)';
+                            if (st === 'armed_night') return 'var(--blue)';
+                            if (st === 'disarmed') return 'var(--contrast10)';
+                            return 'var(--yellow)';
+                          ]]]
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: more-info
+                  double_tap_action:
+                    action: more-info
+              item8:
+                card:
+                  type: custom:button-card
+                  entity: sensor.ipad_battery_level
+                  name: iPad
+                  show_label: true
+                  label: |-
+                    [[[
+                      const st = states['sensor.ipad_battery_level']?.state;
+                      const v = parseFloat(st);
+                      if (isNaN(v)) return st ?? '—';
+                      return `${Math.round(v)}%`;
+                    ]]]
+                  icon: |-
+                    [[[
+                      const st = states['sensor.ipad_battery_level']?.state;
+                      const v = parseFloat(st);
+                      if (isNaN(v)) return 'mdi:battery-unknown';
+                      if (v >= 95) return 'mdi:battery';
+                      if (v >= 85) return 'mdi:battery-90';
+                      if (v >= 75) return 'mdi:battery-80';
+                      if (v >= 65) return 'mdi:battery-70';
+                      if (v >= 55) return 'mdi:battery-60';
+                      if (v >= 45) return 'mdi:battery-50';
+                      if (v >= 35) return 'mdi:battery-40';
+                      if (v >= 25) return 'mdi:battery-30';
+                      if (v >= 15) return 'mdi:battery-20';
+                      if (v >= 5)  return 'mdi:battery-10';
+                      return 'mdi:battery-alert-variant-outline';
+                    ]]]
+                  styles:
+                    card:
+                      - border-radius: 0px
+                      - box-shadow: none
+                      - padding-right: 0px
+                      - background: none
+                    grid:
+                      - grid-template-areas: "'i n' 'i l'"
+                      - grid-template-columns: min-content
+                      - column-gap: 10px
+                    icon:
+                      - width: 20px
+                      - color: |-
+                          [[[
+                            const st = states['sensor.ipad_battery_level']?.state;
+                            const v = parseFloat(st);
+                            if (isNaN(v)) return 'var(--contrast10)';
+                            if (v >= 60) return 'var(--green)';
+                            if (v >= 30) return 'var(--yellow)';
+                            return 'var(--red)';
+                          ]]]
+                    img_cell:
+                      - width: 20px
+                    name:
+                      - justify-self: start
+                      - font-size: 10px
+                      - font-weight: 500
+                      - color: var(--contrast14)
+                    label:
+                      - justify-self: start
+                      - font-size: 15px
+                      - font-weight: 700
+                  tap_action:
+                    action: more-info
+                  double_tap_action:
+                    action: more-info
+    grid_options:
+      columns: full
+      rows: auto
+    view_layout:
+      grid-area: Header
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Cameras
+        icon: mdi:cctv
+      - type: custom:swipe-card
+        card_width: 100%
+        parameters:
+          slidesPerView: 1
+          spaceBetween: 16
+          pagination:
+            type: bullets
+        cards:
+          - type: custom:advanced-camera-card
+            cameras:
+              - camera_entity: camera.doorbell
+            dimensions:
+              aspect_ratio: 16:9
+              aspect_ratio_mode: static
+            card_mod:
+              style: |
+                :host {
+                  aspect-ratio: 16/9;
+                  overflow: hidden;
+                }
+          - type: custom:advanced-camera-card
+            cameras:
+              - camera_entity: camera.front_camera
+            dimensions:
+              aspect_ratio: 16:9
+              aspect_ratio_mode: static
+            card_mod:
+              style: |
+                :host {
+                  aspect-ratio: 16/9;
+                  overflow: hidden;
+                }
+          - type: custom:advanced-camera-card
+            cameras:
+              - camera_entity: camera.driveway
+            dimensions:
+              aspect_ratio: 16:9
+              aspect_ratio_mode: static
+            card_mod:
+              style: |
+                :host {
+                  aspect-ratio: 16/9;
+                  overflow: hidden;
+                }
+    view_layout:
+      grid-area: Cameras
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Media
+        icon: mdi:music
+      - type: custom:bubble-card
+        card_type: media-player
+        entity: media_player.living_room
+        name: Living Room
+      - type: custom:bubble-card
+        card_type: media-player
+        entity: media_player.basement
+        name: Basement
+      - type: custom:bubble-card
+        card_type: media-player
+        entity: media_player.office
+        name: Office
+    view_layout:
+      grid-area: Speakers
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Security
+        icon: mdi:shield-home
+        sub_button:
+          - entity: binary_sensor.door_sensor_door
+            icon: mdi:door
+            show_background: false
+          - entity: binary_sensor.door_sensor_door_2
+            icon: mdi:door
+            show_background: false
+      - type: alarm-panel
+        entity: alarm_control_panel.alarmo
+        states:
+          - arm_home
+          - arm_away
+    view_layout:
+      grid-area: Security
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Climate
+        icon: mdi:thermostat
+        sub_button:
+          - entity: sensor.living_room_temperature
+            show_state: true
+            show_background: false
+          - entity: sensor.living_room_humidity
+            show_state: true
+            show_background: false
+      - type: custom:bubble-card
+        card_type: climate
+        entity: climate.living_room
+        name: Living Room
+        show_state: true
+    view_layout:
+      grid-area: Climate
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Overview
+        icon: mdi:home-analytics
+      - type: markdown
+        content: |
+          {% set hour = now().hour %}
+          {% if hour < 12 %}{% set greeting = "Good morning" %}
+          {% elif hour < 17 %}{% set greeting = "Good afternoon" %}
+          {% else %}{% set greeting = "Good evening" %}{% endif %}
+          {% set lights_on = states.light | selectattr('state', 'eq', 'on') | list | count %}
+          {% set doors = [states.binary_sensor.door_sensor_door, states.binary_sensor.door_sensor_door_2] %}
+          {% set doors_open = doors | selectattr('state', 'eq', 'on') | list | count %}
+          {% set locks = [states.lock.front_door_bolt, states.lock.level_bolt_matter] %}
+          {% set locks_unlocked = locks | selectattr('state', 'eq', 'unlocked') | list | count %}
+          {% set alarm_state = states('alarm_control_panel.alarmo') %}
+          {% set vacuum_state = states('vacuum.p10_pro_ultra') %}
+          {% set temp = states('sensor.living_room_temperature') | round(0) %}
+          {% set leak1 = is_state('binary_sensor.leak_sensor_moisture', 'on') %}
+          {% set leak2 = is_state('binary_sensor.leak_sensor_moisture_2', 'on') %}
+
+          **{{ greeting }}.**
+
+          {% if lights_on == 0 %}All lights are off.{% elif lights_on == 1 %}There is one light on.{% else %}There are {{ lights_on }} lights on.{% endif %}
+
+          {% if doors_open == 0 and locks_unlocked == 0 %}All doors are closed and locked.{% else %}{% if doors_open > 0 %}⚠️ {{ doors_open }} door{{ 's are' if doors_open > 1 else ' is' }} open.{% else %}All doors are closed.{% endif %} {% if locks_unlocked > 0 %}⚠️ {{ locks_unlocked }} lock{{ 's are' if locks_unlocked > 1 else ' is' }} unlocked.{% else %}All locks are secured.{% endif %}{% endif %}
+
+          The inside temperature is {{ temp }}°F.
+
+          {% if alarm_state == 'armed_away' %}The alarm is armed for away mode.{% elif alarm_state == 'armed_home' %}The alarm is armed for home mode.{% elif alarm_state == 'disarmed' %}The alarm is disarmed.{% else %}The alarm is {{ alarm_state | replace('_', ' ') }}.{% endif %}
+
+          {% if vacuum_state == 'docked' %}The vacuum is docked and ready.{% elif vacuum_state == 'cleaning' %}The vacuum is currently cleaning.{% elif vacuum_state == 'returning' %}The vacuum is returning to the dock.{% else %}The vacuum is {{ vacuum_state }}.{% endif %}
+
+          {% if leak1 or leak2 %}⚠️ **Warning: A water leak has been detected!**{% else %}No water leaks detected.{% endif %}
+        card_mod:
+          style: |
+            ha-card {
+              background: var(--contrast2);
+              font-size: 14px;
+              line-height: 1.6;
+            }
+    view_layout:
+      grid-area: Overview
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: separator
+        name: Weather
+        icon: mdi:weather-partly-cloudy
+      - type: custom:clock-weather-card
+        entity: weather.forecast_home
+        sun_entity: sun.sun
+        temperature_sensor: sensor.openweathermap_temperature
+        weather_icon_type: line
+        animated_icon: true
+        forecast_rows: 5
+        locale: en-US
+        time_format: 12
+        date_pattern: EEEE, MMM d
+        hide_clock: false
+        hide_date: false
+        hide_today_section: false
+        hide_forecast_section: false
+    view_layout:
+      grid-area: Weather
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Living Room
+            icon: mdi:sofa-outline
+            hash: "#living-room"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Climate
+            icon: mdi:thermostat
+            sub_button:
+              - entity: sensor.living_room_temperature
+                show_state: true
+                show_background: false
+              - entity: sensor.living_room_humidity
+                show_state: true
+                show_background: false
+          - type: custom:bubble-card
+            card_type: climate
+            entity: climate.living_room
+            sub_button:
+              - name: HVAC modes
+                select_attribute: hvac_modes
+                state_background: false
+                show_arrow: false
+            show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Security
+            icon: mdi:shield-home
+          - type: custom:bubble-card
+            card_type: button
+            entity: lock.front_door_bolt
+            name: Front Door
+            icon: mdi:door
+            button_type: state
+            show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Devices
+            icon: mdi:devices
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: media_player.living_room_apple_tv
+                name: Apple TV
+                icon: mdi:apple
+                button_type: state
+                tap_action:
+                  action: navigate
+                  navigation_path: "#remote"
+              - type: custom:bubble-card
+                card_type: button
+                entity: fan.dyson_fan
+                name: Dyson Fan
+                icon: mdi:fan
+                button_type: switch
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.living_room_ceiling_row_1
+                name: Row 1
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.living_room_ceiling_row_2
+                name: Row 2
+                button_type: slider
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.fireplace_ceiling
+                name: Fireplace
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.dining_room_ceiling
+                name: Dining Room
+                button_type: slider
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.hallway
+                name: Hallway
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.staircase
+                name: Staircase
+                button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: Media
+            icon: mdi:music
+          - type: conditional
+            conditions:
+              - entity: media_player.living_room
+                state_not: standby
+              - entity: media_player.living_room
+                state_not: "off"
+            card:
+              type: custom:bubble-card
+              card_type: media-player
+              entity: media_player.living_room
+              name: Sonos
+          - type: conditional
+            conditions:
+              - entity: media_player.living_room_apple_tv
+                state_not: idle
+              - entity: media_player.living_room_apple_tv
+                state_not: "off"
+            card:
+              type: custom:bubble-card
+              card_type: media-player
+              entity: media_player.living_room_apple_tv
+              name: Apple TV
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Master Suite
+            icon: mdi:bed-king-outline
+            hash: "#master-suite"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bathroom Climate
+            icon: mdi:thermostat
+            sub_button:
+              - entity: sensor.floor_thermostat_temperature
+                show_state: true
+                show_background: false
+          - type: custom:bubble-card
+            card_type: climate
+            entity: climate.floor_thermostat
+            name: Floor Heating
+            sub_button:
+              - name: HVAC modes
+                select_attribute: hvac_modes
+                state_background: false
+                show_arrow: false
+            show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Devices
+            icon: mdi:devices
+          - type: custom:bubble-card
+            card_type: button
+            entity: fan.master_bathroom_fan
+            name: Bathroom Fan
+            icon: mdi:fan
+            button_type: switch
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bedroom Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.master_bedroom_rear
+                name: Rear
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.master_bedroom_front
+                name: Front
+                button_type: slider
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.davids_bed_light
+                name: David's
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.ola_bed_lamp
+                name: Ola's
+                button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bathroom Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.master_bathroom_vanity
+                name: Vanity
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.master_bathroom_ceiling
+                name: Ceiling
+                button_type: slider
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Office
+            icon: mdi:monitor
+            hash: "#office"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.office_ceiling_main
+                name: Main
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.office_ceiling_side
+                name: Side
+                button_type: slider
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.office_lamp
+                name: Lamp
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.desk_lamp
+                name: Desk
+                button_type: slider
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.tp_link_smart_dimmer_38c5
+            name: Rear Lights
+            button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: 3D Printers
+            icon: mdi:printer-3d
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: switch.prusa_mini_power
+                name: Mini
+                icon: mdi:printer-3d
+                button_type: switch
+              - type: custom:bubble-card
+                card_type: button
+                entity: switch.mk3s
+                name: MK3S
+                icon: mdi:printer-3d
+                button_type: switch
+              - type: custom:bubble-card
+                card_type: button
+                entity: switch.ender_3_power
+                name: Ender 3
+                icon: mdi:printer-3d
+                button_type: switch
+          - type: custom:bubble-card
+            card_type: separator
+            name: Printer
+            icon: mdi:printer
+            sub_button:
+              - entity: sensor.cnlbp622c_623c
+                show_state: true
+                show_background: false
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.cnlbp622c_623c_canon_cartridge_054_cyan_toner
+                name: Cyan
+                icon: mdi:water
+                button_type: state
+                show_state: true
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.cnlbp622c_623c_canon_cartridge_054_yellow_ton
+                name: Yellow
+                icon: mdi:water
+                button_type: state
+                show_state: true
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.cnlbp622c_623c_canon_cartridge_054_magenta_to
+                name: Magenta
+                icon: mdi:water
+                button_type: state
+                show_state: true
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.cnlbp622c_623c_canon_cartridge_054_black_toner
+                name: Black
+                icon: mdi:water
+                button_type: state
+                show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Media
+            icon: mdi:music
+          - type: conditional
+            conditions:
+              - entity: media_player.office
+                state_not: standby
+              - entity: media_player.office
+                state_not: "off"
+            card:
+              type: custom:bubble-card
+              card_type: media-player
+              entity: media_player.office
+              name: Sonos
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Kitchen
+            icon: mdi:silverware-variant
+            hash: "#kitchen"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Security
+            icon: mdi:shield-home
+            sub_button:
+              - entity: binary_sensor.door_sensor_door_2
+                icon: mdi:door
+                show_background: false
+              - entity: binary_sensor.leak_sensor_moisture_2
+                icon: mdi:water-alert
+                show_background: false
+          - type: custom:bubble-card
+            card_type: button
+            entity: lock.level_bolt_matter
+            name: Back Door
+            icon: mdi:door
+            button_type: state
+            show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.kitchen
+                name: Ceiling
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.under_cabinet_lights
+                name: Under Cabinet
+                button_type: slider
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.kitchen_sink
+                name: Sink
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.breakfast_corner
+                name: Breakfast
+                button_type: slider
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Bedrooms
+            icon: mdi:bed-outline
+            hash: "#bedrooms"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bathroom Climate
+            icon: mdi:thermostat
+            sub_button:
+              - entity: sensor.floor_thermostat_temperature_2
+                show_state: true
+                show_background: false
+          - type: custom:bubble-card
+            card_type: climate
+            entity: climate.floor_thermostat_2
+            name: 1st Floor Bathroom
+            sub_button:
+              - name: HVAC modes
+                select_attribute: hvac_modes
+                state_background: false
+                show_arrow: false
+            show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Devices
+            icon: mdi:devices
+          - type: custom:bubble-card
+            card_type: button
+            entity: fan.first_floor_bathroom_fan
+            name: Bathroom Fan
+            icon: mdi:fan
+            button_type: switch
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bedroom Lights
+            icon: mdi:lightbulb-group
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.west_bedroom
+            name: West Bedroom
+            button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bathroom Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.first_floor_bathroom_vanity
+                name: Vanity
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.first_floor_bathroom_ceiling
+                name: Ceiling
+                button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: Media
+            icon: mdi:music
+          - type: conditional
+            conditions:
+              - entity: media_player.guest_room
+                state_not: standby
+              - entity: media_player.guest_room
+                state_not: "off"
+            card:
+              type: custom:bubble-card
+              card_type: media-player
+              entity: media_player.guest_room
+              name: Guest Room
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Basement
+            icon: mdi:stairs-down
+            hash: "#basement"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Climate
+            icon: mdi:thermostat
+            sub_button:
+              - entity: sensor.thermometer_hygrometer_temperature
+                show_state: true
+                show_background: false
+              - entity: sensor.thermometer_hygrometer_humidity
+                show_state: true
+                show_background: false
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.basement_great_room
+                name: Great Room
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.basement_play_area
+                name: Play Area
+                button_type: slider
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.bar_lights
+                name: Bar
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.basement_landing
+                name: Landing
+                button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: Devices
+            icon: mdi:devices
+          - type: custom:bubble-card
+            card_type: button
+            entity: switch.display_case
+            name: Display Case
+            icon: mdi:led-strip-variant
+            button_type: switch
+          - type: custom:bubble-card
+            card_type: separator
+            name: Media
+            icon: mdi:music
+          - type: conditional
+            conditions:
+              - entity: media_player.basement
+                state_not: "off"
+            card:
+              type: custom:bubble-card
+              card_type: media-player
+              entity: media_player.basement
+              name: Sonos
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Basement Utility
+            icon: mdi:tools
+            hash: "#basement-utility"
+            button_type: name
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            name: Laundry
+            icon: mdi:washing-machine
+            sub_button:
+              - entity: binary_sensor.leak_sensor_moisture
+                icon: mdi:water-alert
+                show_background: false
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.washer_current_status
+                name: Washer
+                icon: mdi:washing-machine
+                button_type: state
+                show_state: true
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.dryer_current_status
+                name: Dryer
+                icon: mdi:tumble-dryer
+                button_type: state
+                show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            icon: mdi:lightbulb-group
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.laundry_room
+                name: Laundry
+                button_type: slider
+              - type: custom:bubble-card
+                card_type: button
+                entity: light.tp_link_smart_dimmer_4b11
+                name: Bath Ceiling
+                button_type: slider
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.basement_bathroom_vanity
+            name: Bathroom Vanity
+            button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+            name: Bathroom
+            icon: mdi:fan
+          - type: custom:bubble-card
+            card_type: button
+            entity: fan.basement_bathroom_fan
+            name: Exhaust Fan
+            icon: mdi:fan
+            button_type: switch
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Garage
+            icon: mdi:garage
+            hash: "#garage"
+            button_type: name
+            sub_button: []
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: entity
+                entity: binary_sensor.ratgdo32_691830_motion
+                icon_color: yellow
+                content_info: last-changed
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.ratgdo32_691830_obstruction
+                icon_color: red
+                icon: mdi:alert
+              - type: entity
+                entity: binary_sensor.ratgdo32_691830_motor
+                icon_color: blue
+                icon: mdi:cog
+              - type: entity
+                entity: binary_sensor.ratgdo32_691830_button
+                icon_color: green
+                icon: mdi:gesture-tap-button
+              - type: entity
+                entity: sensor.ratgdo32_691830_paired_devices
+                icon_color: purple
+                icon: mdi:remote
+            alignment: center
+          - type: heading
+            icon: mdi:garage
+            heading: Garage Door
+            heading_style: title
+            badges:
+              - type: entity
+                entity: cover.ratgdo32_691830_door
+                show_state: true
+                show_icon: true
+          - type: custom:bubble-card
+            card_type: cover
+            entity: cover.ratgdo32_691830_door
+            name: Garage Door
+            show_state: true
+          - type: heading
+            icon: mdi:lightbulb-group
+            heading: Lights
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: false
+                show_icon: true
+                entity: switch.garage_lights
+                color: yellow
+                tap_action:
+                  action: toggle
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: switch.garage_lights
+                name: Garage Lights
+                template: button_template
+                variables:
+                  state_on: "on"
+                  state_off: "off"
+              - type: custom:button-card
+                entity: light.ratgdo32_691830_light
+                name: Door Light
+                template: light_switch
+          - type: heading
+            icon: mdi:lock
+            heading: Locks
+            heading_style: title
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: lock.level_bolt_matter_2
+                name: Side Garage Door
+              - type: tile
+                entity: lock.ratgdo32_691830_lock_remotes
+                name: Lock Remotes
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Outdoors
+            icon: mdi:tree-outline
+            hash: "#outdoors"
+            button_type: name
+            sub_button: []
+          - type: heading
+            icon: mdi:lightbulb-group
+            heading: Lights
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: false
+                show_icon: true
+                entity: light.front_house_lights
+                color: yellow
+                tap_action:
+                  action: toggle
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:button-card
+                name: Front House
+                template: light_rgb
+                entity: light.front_house_lights
+              - type: custom:button-card
+                name: Driveway
+                template: light_rgb
+                entity: light.driveway_lights
+              - type: custom:button-card
+                name: Rear Lights
+                template: light_rgb
+                entity: light.outdoor_rear_lights
+              - type: custom:button-card
+                name: House Number
+                template: light_rgb
+                entity: light.house_number_sign
+              - type: custom:button-card
+                name: Patio
+                template: light_rgb
+                entity: light.tapo_smart_dimmer
+              - type: custom:button-card
+                name: Garage Driveway
+                template: light_rgb
+                entity: light.garage_driveway_lights
+          - type: heading
+            icon: mdi:water
+            heading: Irrigation
+            heading_style: title
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: switch.front
+                name: Front Yard
+                template: button_template
+                variables:
+                  state_on: "on"
+                  state_off: "off"
+                  background_color_on: var(--blue)
+              - type: custom:button-card
+                entity: switch.back
+                name: Backyard
+                template: button_template
+                variables:
+                  state_on: "on"
+                  state_off: "off"
+                  background_color_on: var(--blue)
+          - type: heading
+            icon: mdi:cctv
+            heading: Cameras
+            heading_style: title
+          - type: custom:swipe-card
+            card_width: calc(100% - 48px)
+            parameters:
+              centeredSlides: true
+              slidesPerView: auto
+              spaceBetween: 16
+              initialSlide: 0
+            cards:
+              - type: picture-entity
+                entity: camera.front_camera
+                camera_view: live
+                show_state: false
+                show_name: true
+              - type: picture-entity
+                entity: camera.doorbell
+                camera_view: live
+                show_state: false
+                show_name: true
+              - type: picture-entity
+                entity: camera.driveway
+                camera_view: live
+                show_state: false
+                show_name: true
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Lights
+            icon: mdi:lightbulb-group
+            hash: "#lights"
+            button_type: name
+          - type: heading
+            icon: mdi:cog
+            heading: Settings
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: false
+                show_icon: true
+                entity: light.living_room_lights
+                color: yellow
+                tap_action:
+                  action: toggle
+          - type: heading
+            icon: mdi:lightbulb-group
+            heading: All Lights
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:sofa-outline
+                heading: Living Room
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.living_room_lights
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: living-room
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Living Room Ceiling Row 1
+                    template: light_rgb
+                    entity: light.living_room_ceiling_row_1
+                  - type: custom:button-card
+                    name: Living Room Ceiling Row 2
+                    template: light_rgb
+                    entity: light.living_room_ceiling_row_2
+                  - type: custom:button-card
+                    name: Fireplace Ceiling
+                    entity: light.fireplace_ceiling
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: Laundry Room
+                    entity: light.laundry_room
+                    template: light_switch
+                  - type: custom:button-card
+                    name: Dining Room Ceiling
+                    template: light_rgb
+                    entity: light.dining_room_ceiling
+                  - type: custom:button-card
+                    name: Staircase
+                    template: light_rgb
+                    entity: light.staircase
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:bed-king
+                heading: Master Bedroom
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.master_bedroom_rear
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: bedroom
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Master Bedroom Rear
+                    entity: light.master_bedroom_rear
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: Master Bedroom Front
+                    entity: light.master_bedroom_front
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: David's Bed Light
+                    entity: light.davids_bed_light
+                    template: light_switch
+                  - type: custom:button-card
+                    name: Ola's Bed Lamp
+                    entity: light.ola_bed_lamp
+                    template: light_switch
+                  - type: custom:button-card
+                    name: West Bedroom
+                    template: light_rgb
+                    entity: light.west_bedroom
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:monitor
+                heading: Office
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.office_ceiling_main
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: office
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Office Ceiling Main
+                    template: light_rgb
+                    entity: light.office_ceiling_main
+                  - type: custom:button-card
+                    name: Office Ceiling Side
+                    template: light_rgb
+                    entity: light.office_ceiling_side
+                  - type: custom:button-card
+                    name: Office Lamp
+                    entity: light.office_lamp
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: Desk Lamp
+                    entity: light.desk_lamp
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: Office Rear Lights
+                    entity: light.tp_link_smart_dimmer_38c5
+                    template: light_rgb
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:silverware-variant
+                heading: Kitchen
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.kitchen
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: kitchen
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Kitchen Ceiling
+                    template: light_rgb
+                    entity: light.kitchen
+                  - type: custom:button-card
+                    name: Under Cabinet Lights
+                    entity: light.under_cabinet_lights
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: Kitchen Sink
+                    entity: light.kitchen_sink
+                    template: light_switch
+                  - type: custom:button-card
+                    name: Breakfast Corner
+                    entity: light.breakfast_corner
+                    template: light_rgb
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:shower
+                heading: Master Bathroom
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.master_bathroom_vanity
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: master-bathroom
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Master Bathroom Vanity
+                    entity: light.master_bathroom_vanity
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: Master Bathroom Ceiling
+                    entity: light.master_bathroom_ceiling
+                    template: light_rgb
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:bathtub
+                heading: First Floor Bathroom
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.first_floor_bathroom_vanity
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: first-floor-bathroom
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: First Floor Bathroom Vanity
+                    entity: light.first_floor_bathroom_vanity
+                    template: light_rgb
+                  - type: custom:button-card
+                    name: First Floor Bathroom Ceiling
+                    entity: light.first_floor_bathroom_ceiling
+                    template: light_rgb
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: heading
+                icon: mdi:stairs
+                heading: Hallway
+                heading_style: subtitle
+                badges:
+                  - type: entity
+                    show_state: false
+                    show_icon: true
+                    entity: light.hallway
+                    color: yellow
+                    tap_action:
+                      action: toggle
+                tap_action:
+                  action: navigate
+                  navigation_path: hallway
+              - square: false
+                columns: 1
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Hallway
+                    entity: light.hallway
+                    template: light_rgb
+            columns: 1
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Chores
+            icon: mdi:list-box-outline
+            hash: "#chores"
+            button_type: name
+            card_layout: large
+            sub_button:
+              - icon: mdi:sync
+                tap_action:
+                  action: call-service
+                  service: script.sync_chores_list
+                show_background: false
+          - type: todo-list
+            entity: todo.chores
+            card_mod:
+              style: |
+                ha-card {
+                  background: var(--contrast2);
+                }
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Sync with iCloud
+            icon: mdi:apple-icloud
+            tap_action:
+              action: call-service
+              service: script.sync_chores_list
+            styles: |
+              .bubble-button-card-container {
+                background: var(--contrast3);
+              }
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Alarm
+            icon: mdi:alarm
+            hash: "#alarm"
+            button_type: name
+          - square: false
+            columns: 1
+            type: grid
+            cards:
+              - square: false
+                columns: 2
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    entity: input_boolean.light_alarm
+                    label: >-
+                      [[[ return
+                      states["sensor.light_alarm_time_readable"].state ]]]
+                    template: switch_label_template
+                    variables:
+                      icon_on: mdi:alarm-light-outline
+                      icon_off: mdi:alarm-light-off-outline
+                      color: var(--yellow)
+                  - type: custom:button-card
+                    entity: input_boolean.sound_alarm
+                    label: "[[[ return states[\"sensor.wake_time_1\"].state ]]]"
+                    template: switch_label_template
+                    variables:
+                      icon_on: mdi:alarm-note
+                      icon_off: mdi:alarm-note-off
+                      color: var(--green)
+              - type: custom:button-card
+                entity: sensor.wake_time_1
+                icon: |
+                  [[[
+                    if (states['binary_sensor.is_alarm_on'].state == "on") return "mdi:alarm";
+                    else return "mdi:alarm-off";
+                  ]]]
+                show_icon: true
+                show_state: true
+                show_name: false
+                tap_action:
+                  action: none
+                styles:
+                  grid:
+                    - grid-template-areas: "\". plus1 plus2 .\" \"i s s .\" \". minus1 minus2 .\""
+                    - grid-template-columns: 1fr min-content min-content 1fr
+                    - grid-template-rows: 1fr min-content
+                  card:
+                    - background: none
+                    - box-shadow: none
+                  state:
+                    - font-size: 50px
+                  icon:
+                    - color: |
+                        [[[
+                          if (states['binary_sensor.is_alarm_on'].state == "on") return "var(--contrast20)";
+                          else return "var(--contrast10)";
+                        ]]]
+                custom_fields:
+                  plus1:
+                    card:
+                      type: custom:button-card
+                      icon: mdi:plus
+                      tap_action:
+                        action: perform-action
+                        perform_action: input_number.increment
+                        target:
+                          entity_id: input_number.wakehour_1
+                      styles:
+                        card:
+                          - background: none
+                          - box-shadow: none
+                  plus2:
+                    card:
+                      type: custom:button-card
+                      icon: mdi:plus
+                      tap_action:
+                        action: perform-action
+                        perform_action: input_number.increment
+                        target:
+                          entity_id: input_number.wakeminutes_1
+                      styles:
+                        card:
+                          - background: none
+                          - box-shadow: none
+                  minus1:
+                    card:
+                      type: custom:button-card
+                      icon: mdi:minus
+                      tap_action:
+                        action: perform-action
+                        perform_action: input_number.decrement
+                        target:
+                          entity_id: input_number.wakehour_1
+                      styles:
+                        card:
+                          - background: none
+                          - box-shadow: none
+                  minus2:
+                    card:
+                      type: custom:button-card
+                      icon: mdi:minus
+                      tap_action:
+                        action: perform-action
+                        perform_action: input_number.decrement
+                        target:
+                          entity_id: input_number.wakeminutes_1
+                      styles:
+                        card:
+                          - background: none
+                          - box-shadow: none
+              - square: true
+                columns: 7
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_mon_1
+                    show_name: true
+                    show_icon: false
+                    name: Mo
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--orange)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_tue_1
+                    show_name: true
+                    show_icon: false
+                    name: Tu
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--green)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_wed_1
+                    show_name: true
+                    show_icon: false
+                    name: We
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--blue)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_thu_1
+                    show_name: true
+                    show_icon: false
+                    name: Th
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--red)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_fri_1
+                    show_name: true
+                    show_icon: false
+                    name: Fr
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--purple)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_sat_1
+                    show_name: true
+                    show_icon: false
+                    name: Sa
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--yellow)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+                  - type: custom:button-card
+                    entity: input_boolean.wakeweekday_sun_1
+                    show_name: true
+                    show_icon: false
+                    name: Su
+                    aspect_ratio: 1/1
+                    tap_action:
+                      action: toggle
+                    styles:
+                      card:
+                        - border-radius: 14px
+                        - background-color: |
+                            [[[
+                              if (entity.state == "on") return "var(--teal)";
+                              else return "var(--contrast2)";
+                            ]]]
+                      name:
+                        - color: |
+                            [[[
+                              if (entity.state == "on") return "var(--black)";
+                              else return "var(--contrast20)";
+                            ]]]
+              - square: false
+                type: grid
+                cards:
+                  - type: custom:button-card
+                    name: Light Offset
+                    entity: input_number.light_alarm_offset
+                    show_state: false
+                    template: custom_card_number_slider
+                    variables:
+                      icon: "[[[ return entity.attributes.icon ]]]"
+                      label: >-
+                        [[[return
+                        Math.round(states["input_number.light_alarm_offset"].state)
+                        + "min" ]]]
+                      color: var(--yellow)
+                  - type: custom:button-card
+                    name: Volume
+                    entity: input_number.alarm_volume
+                    show_state: false
+                    template: custom_card_number_slider
+                    variables:
+                      icon: "[[[ return entity.attributes.icon ]]]"
+                      label: >-
+                        [[[return states["input_number.alarm_volume"].state*100
+                        + "%"]]]
+                      color: var(--green)
+                columns: 2
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Climate
+            icon: mdi:thermometer
+            hash: "#climate"
+            button_type: name
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.temperature_mean
+                name: Temperature
+                line_color: var(--red)
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.humidity_mean
+                name: Humidity
+                line_color: var(--blue)
+            columns: 2
+          - features:
+              - type: climate-preset-modes
+                style: dropdown
+                preset_modes:
+                  - away
+                  - home
+            type: tile
+            entity: climate.bathroom
+            name: Mode
+            icon: mdi:home-thermometer-outline
+            vertical: false
+            state_content:
+              - preset_mode
+              - current_temperature
+            features_position: bottom
+          - type: heading
+            icon: mdi:thermostat
+            heading: Thermostat
+            heading_style: title
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: climate.living_room
+                template: custom_card_climate
+                variables:
+                  sensor: binary_sensor.living_room_window_door_sensor
+                  name: "[[[ return \"Living<br>Room\" ]]]"
+                  radius: 24px
+              - type: custom:button-card
+                entity: climate.bed_room
+                template: custom_card_climate
+                variables:
+                  sensor: binary_sensor.bed_room_window_door_sensor
+                  name: "[[[ return \"Bedroom\" ]]]"
+                  radius: 24px
+              - type: custom:button-card
+                entity: climate.office
+                template: custom_card_climate
+                variables:
+                  sensor: binary_sensor.office_window_door_sensor
+                  name: "[[[ return \"Office<br>\" ]]]"
+                  radius: 24px
+              - type: custom:button-card
+                entity: climate.kitchen
+                template: custom_card_climate
+                variables:
+                  sensor: binary_sensor.kitchen_window_door_sensor
+                  name: "[[[ return \"Kitchen\" ]]]"
+                  radius: 24px
+              - type: custom:button-card
+                entity: climate.bathroom
+                template: custom_card_climate
+                variables:
+                  sensor: binary_sensor.bathroom_window_door_sensor
+                  name: "[[[ return \"Bathroom\" ]]]"
+                  radius: 24px
+              - type: custom:button-card
+                entity: climate.guest_room
+                template: custom_card_climate
+                variables:
+                  sensor: binary_sensor.guest_room_window_door_sensor
+                  name: "[[[ return \"Guest<br>Room\" ]]]"
+                  radius: 24px
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Vacuum
+            icon: mdi:robot-vacuum
+            hash: "#vacuum"
+            button_type: name
+          - type: picture-entity
+            entity: camera.p10_pro_ultra_map
+            show_state: false
+            show_name: false
+          - type: custom:button-card
+            entity: vacuum.p10_pro_ultra
+            name: P10 Pro Ultra
+            icon: |
+              [[[
+                if (entity.state == 'idle') {
+                  return 'mdi:dots-circle';
+                } else if (entity.state == 'cleaning') {
+                  return 'mdi:robot-vacuum';
+                } else if (entity.state == 'docked') {
+                  return 'mdi:robot-vacuum-off';
+                } else {
+                  return 'mdi:robot-vacuum-alert';
+                }
+              ]]]
+            show_name: true
+            show_icon: true
+            show_label: true
+            show_state: false
+            tap_action:
+              action: more-info
+            hold_action:
+              action: more-info
+            double_tap_action:
+              action: call-service
+              service: vacuum.return_to_base
+              service_data:
+                entity_id: vacuum.p10_pro_ultra
+            label: "[[[ return states[\"vacuum.p10_pro_ultra\"].state ]]]"
+            custom_fields:
+              icon1:
+                card:
+                  type: custom:button-card
+                  icon: mdi:robot-vacuum
+                  styles:
+                    card:
+                      - background-color: var(--contrast1)
+                      - width: 30px
+                      - height: 30px
+                    icon:
+                      - width: 18px
+                      - color: var(--contrast20)
+            styles:
+              grid:
+                - grid-template-areas: "\". icon1\" \"l l\" \"n .\" \"rem .\" \"bar bar\" \"start end\""
+                - grid-template-rows: 24px 1fr 24px min-content min-content min-content
+                - grid-template-columns: 60% 40%
+              card:
+                - height: 100%
+                - padding: 1rem
+                - background: |
+                    [[[
+                      if (entity.state == 'docked') {
+                        return 'var(--contrast2)';
+                      } else if (entity.state == 'cleaning') {
+                        return 'var(--green)';
+                      } else if (entity.state == 'idle') {
+                        return 'var(--yellow)';
+                      } else {
+                        return 'var(--red)';
+                      }
+                    ]]]
+              img_cell:
+                - position: absolute
+                - top: 20%
+                - left: 40%
+                - overflow: visible
+              icon:
+                - position: absolute
+                - width: 20em
+                - opacity: 20%
+                - color: |
+                    [[[
+                      if (entity.state == 'docked') {
+                        return 'var(--white)';
+                      } else {
+                        return 'var(--black)';
+                      }
+                    ]]]
+                - transform: rotate(-20deg)
+                - animation: |
+                    [[[
+                      if (entity.state == 'docked') {
+                        return 'null';
+                      } else if (entity.state == 'idle') {
+                        return 'blink 1.5s linear infinite';
+                      } else if (entity.state == 'cleaning') {
+                        return 'rotating 2s linear infinite';
+                      } else {
+                        return 'blink 1.5s linear infinite';
+                      }
+                    ]]]
+              label:
+                - text-align: left
+                - font-size: 18px
+                - font-weight: 500
+                - justify-self: start
+                - align-self: end
+                - overflow: visible
+                - color: |
+                    [[[
+                      if (entity.state == 'docked') {
+                        return 'var(--contrast20)';
+                      } else {
+                        return 'var(--black)';
+                      }
+                    ]]]
+              name:
+                - text-align: left
+                - font-size: 12px
+                - opacity: 0.7
+                - justify-self: start
+                - align-self: center
+                - overflow: visible
+                - color: |
+                    [[[
+                      if (entity.state == 'docked') {
+                        return 'var(--contrast20)';
+                      } else {
+                        return 'var(--black)';
+                      }
+                    ]]]
+              custom_fields:
+                icon1:
+                  - justify-self: end
+                  - width: 24px
+                  - color: |
+                      [[[
+                        if (entity.state == 'docked') {
+                          return 'var(--contrast20)';
+                        } else {
+                          return 'var(--black)';
+                        }
+                      ]]]
+              hold_action:
+                action: more-info
+          - type: entities
+            entities:
+              - entity: select.p10_pro_ultra_cleaning_mode
+                name: Cleaning Mode
+              - entity: select.p10_pro_ultra_suction_level
+                name: Suction Level
+          - type: heading
+            heading: Select Rooms
+            heading_style: subtitle
+            icon: mdi:floor-plan
+          - square: false
+            columns: 4
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: input_boolean.vacuum_kitchen
+                name: Kitchen
+                icon: mdi:silverware-fork-knife
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_kitchen
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_living_room
+                name: Living Room
+                icon: mdi:sofa
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_living_room
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_master_bedroom
+                name: Master Bed
+                icon: mdi:bed-king
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_master_bedroom
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_east_bedroom
+                name: East Bed
+                icon: mdi:bed
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_east_bedroom
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_west_bedroom
+                name: West Bed
+                icon: mdi:bed-single
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_west_bedroom
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_master_bathroom
+                name: Master Bath
+                icon: mdi:shower
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_master_bathroom
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_first_floor_bathroom
+                name: 1st Fl Bath
+                icon: mdi:toilet
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_first_floor_bathroom
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+              - type: custom:button-card
+                entity: input_boolean.vacuum_hallway
+                name: Hallway
+                icon: mdi:door-open
+                show_name: true
+                show_icon: true
+                show_state: false
+                color_type: card
+                color: var(--blue)
+                tap_action:
+                  action: call-service
+                  service: input_boolean.toggle
+                  service_data:
+                    entity_id: input_boolean.vacuum_hallway
+                styles:
+                  card:
+                    - border-radius: 12px
+                    - padding: 12px
+                  name:
+                    - font-size: 12px
+                state:
+                  - value: "off"
+                    color: var(--contrast20)
+                    styles:
+                      card:
+                        - background: var(--contrast2)
+                      icon:
+                        - color: var(--contrast20)
+                      name:
+                        - color: var(--contrast20)
+                  - value: "on"
+                    color: var(--blue)
+                    styles:
+                      card:
+                        - background: var(--blue)
+                      icon:
+                        - color: var(--black)
+                      name:
+                        - color: var(--black)
+          - type: custom:button-card
+            name: Start Selected
+            icon: mdi:play
+            show_name: true
+            show_icon: true
+            tap_action:
+              action: call-service
+              service: script.vacuum_clean_selected_rooms
+            styles:
+              card:
+                - background: var(--green)
+                - border-radius: 12px
+                - padding: 8px
+              icon:
+                - color: var(--black)
+                - width: 18px
+              name:
+                - color: var(--black)
+                - font-size: 12px
+          - type: heading
+            heading: Controls
+            heading_style: subtitle
+            icon: mdi:robot-vacuum
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: vacuum.p10_pro_ultra
+                icon: mdi:pause
+                label: Start
+                name: >-
+                  [[[return states["sensor.p10_pro_ultra_battery_level"].state +
+                  "% Battery"]]]
+                template: button_template
+                variables:
+                  icon2: mdi:play
+                  state_on: cleaning
+                  state_off: docked
+                  background_color_off: var(--green)
+                  background_color_on: var(--red)
+                  color_on: var(--black)
+                  color_off: var(--black)
+                tap_action:
+                  action: call-service
+                  service: vacuum.start
+                  service_data:
+                    entity_id: vacuum.p10_pro_ultra
+                  haptic: success
+              - type: custom:button-card
+                entity: vacuum.p10_pro_ultra
+                icon: mdi:home-variant
+                name: >-
+                  [[[ return "Currently " + states["vacuum.p10_pro_ultra"].state
+                  ]]]
+                label: Return
+                show_label: true
+                tap_action:
+                  action: call-service
+                  service: vacuum.return_to_base
+                  service_data:
+                    entity_id: vacuum.p10_pro_ultra
+                  haptic: success
+                template: button_template
+                variables:
+                  icon2: mdi:home-variant
+                  state_on: cleaning
+                  state_off: docked
+                  background_color_off: var(--red)
+                  background_color_on: var(--red)
+                  color_on: var(--black)
+                  color_off: var(--black)
+              - type: custom:button-card
+                entity: sensor.p10_pro_ultra_main_brush_left
+                template: custom_card_sensor_small
+                name: Main Brush
+                variables:
+                  state: |
+                    [[[ 
+                      var st = states[entity.entity_id].state;
+                      var uni = '%';
+                      return `
+                      ${st}<span style="font-size:
+                    0.5em;opacity:0.7">${uni}</span>
+                      `
+                    ]]]
+              - type: custom:button-card
+                entity: sensor.p10_pro_ultra_side_brush_left
+                template: custom_card_sensor_small
+                name: Side Brush
+                variables:
+                  state: |
+                    [[[ 
+                      var st = states[entity.entity_id].state;
+                      var uni = '%';
+                      return `
+                      ${st}<span style="font-size:
+                    0.5em;opacity:0.7">${uni}</span>
+                      `
+                    ]]]
+              - type: custom:button-card
+                entity: sensor.p10_pro_ultra_filter_left
+                template: custom_card_sensor_small
+                name: Filter
+                variables:
+                  state: |
+                    [[[ 
+                      var st = states[entity.entity_id].state;
+                      var uni = '%';
+                      return `
+                      ${st}<span style="font-size:
+                    0.5em;opacity:0.7">${uni}</span>
+                      `
+                    ]]]
+              - type: custom:button-card
+                entity: sensor.p10_pro_ultra_cleaning_count
+                template: custom_card_sensor_small
+                name: Total Cleanings
+                variables:
+                  state: |
+                    [[[ 
+                      var st = states[entity.entity_id].state;
+                      var uni = ' ';
+                      return `
+                      ${st}<span style="font-size:
+                    0.5em;opacity:0.7">${uni}</span>
+                      `
+                    ]]]
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Remote
+            icon: mdi:television
+            hash: "#remote"
+            button_type: name
+            sub_button:
+              - entity: select.harmony_hub_activities
+                show_name: false
+                show_state: true
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.is_tv_on
+                state: "on"
+              - entity: switch.harmony_hub_nintendo_switch
+                state_not: "on"
+            card:
+              type: heading
+              icon: mdi:multimedia
+              heading: Media
+              heading_style: title
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.is_tv_on
+                state: "on"
+              - entity: switch.harmony_hub_nintendo_switch
+                state_not: "on"
+            card:
+              type: custom:button-card
+              entity: media_player.tv_and_ps5
+              template: custom_card_mediaplayer_tv
+          - type: heading
+            icon: mdi:star
+            heading: Activities
+            heading_style: title
+          - columns: 4
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: select.harmony_hub_activities
+                icon: mdi:television-guide
+                show_name: false
+                aspect_ratio: 1/1
+                tap_action:
+                  action: call-service
+                  service: select.select_option
+                  target:
+                    entity_id: select.harmony_hub_activities
+                  data:
+                    option: Smart TV
+                  haptic: medium
+                hold_action:
+                  action: more-info
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--green)
+                  icon:
+                    - color: |
+                        [[[
+                          if (entity.state == "Smart TV") return "var(--white)";
+                          else return "var(--black)";
+                        ]]]
+              - type: custom:button-card
+                entity: select.harmony_hub_activities
+                icon: mdi:netflix
+                show_name: false
+                aspect_ratio: 1/1
+                tap_action:
+                  action: call-service
+                  service: select.select_option
+                  target:
+                    entity_id: select.harmony_hub_activities
+                  data:
+                    option: Netflix
+                  haptic: medium
+                hold_action:
+                  action: more-info
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--red)
+                  icon:
+                    - color: |
+                        [[[
+                          if (entity.state == "Netflix") return "var(--white)";
+                          else return "var(--black)";
+                        ]]]
+              - type: custom:button-card
+                entity: select.harmony_hub_activities
+                icon: mdi:sony-playstation
+                show_name: false
+                aspect_ratio: 1/1
+                tap_action:
+                  action: call-service
+                  service: select.select_option
+                  target:
+                    entity_id: select.harmony_hub_activities
+                  data:
+                    option: Playstation
+                  haptic: medium
+                hold_action:
+                  action: more-info
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--blue)
+                  icon:
+                    - color: |
+                        [[[
+                          if (entity.state == "Playstation") return "var(--white)";
+                          else return "var(--black)";
+                        ]]]
+              - type: custom:button-card
+                entity: select.harmony_hub_activities
+                icon: mdi:nintendo-switch
+                show_name: false
+                aspect_ratio: 1/1
+                tap_action:
+                  action: call-service
+                  service: select.select_option
+                  target:
+                    entity_id: select.harmony_hub_activities
+                  data:
+                    option: Nintendo Switch
+                  haptic: medium
+                hold_action:
+                  action: more-info
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--red)
+                  icon:
+                    - color: |
+                        [[[
+                          if (entity.state == "Nintendo Switch") return "var(--white)";
+                          else return "var(--black)";
+                        ]]]
+          - type: heading
+            icon: mdi:remote-tv
+            heading: Remote
+            heading_style: title
+          - type: grid
+            cards:
+              - type: custom:button-card
+                icon: mdi:volume-minus
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "53906750"
+                    command: VolumeDown
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:volume-mute
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "53906750"
+                    command: Mute
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:volume-plus
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "53906750"
+                    command: VolumeUp
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icontype: custom:button-card
+                icon: mdi:power
+                entity: remote.harmony_hub
+                show_name: false
+                aspect_ratio: 1/1
+                tap_action:
+                  action: call-service
+                  service: script.turn_on_tv
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background: var(--green)
+                  icon:
+                    - width: 32px
+                    - color: var(--black)
+                state:
+                  - value: "on"
+                    styles:
+                      card:
+                        - background: var(--red)
+              - type: custom:button-card
+                icon: mdi:chevron-up
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "77485195"
+                    command: DirectionUp
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                aspect_ratio: 1/1
+                show_name: false
+                tap_action:
+                  action: call-service
+                  haptic: medium
+                  service: media_player.media_play_pause
+                  service_data:
+                    entity_id: media_player.apple_tv_4k_2
+                styles:
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                icon: mdi:pause
+                entity: media_player.apple_tv_4k_2
+                state:
+                  - value: paused
+                    icon: mdi:play
+                    styles:
+                      card:
+                        - background-color: var(--green)
+                      icon:
+                        - color: var(--black)
+                  - value: playing
+                    styles:
+                      card:
+                        - background-color: var(--yellow)
+                      icon:
+                        - color: var(--black)
+              - type: custom:button-card
+                icon: mdi:chevron-left
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "77485195"
+                    command: DirectionLeft
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:circle-outline
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "77485195"
+                    command: Select
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:chevron-right
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "77485195"
+                    command: DirectionRight
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:arrow-left
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "53906339"
+                    command: Back
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:chevron-down
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "77485195"
+                    command: DirectionDown
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+              - type: custom:button-card
+                icon: mdi:home-variant
+                aspect_ratio: 1/1
+                entity: media_player.apple_tv_4k_2
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    device: "77485195"
+                    command: Home
+                    entity_id: remote.harmony_hub
+                styles:
+                  card:
+                    - border-radius: 24px
+                    - background-color: var(--contrast2)
+                  icon:
+                    - width: 32px
+                    - color: var(--contrast8)
+                state:
+                  - value: "on"
+                    styles:
+                      icon:
+                        - color: var(--contrast20)
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#david"
+            name: David
+            icon: mdi:face-agent
+            bg_opacity: 100
+            hide_backdrop: true
+            bg_blur: 100
+            bg_color: var(--contrast1)
+            button_type: name
+            sub_button:
+              - entity: person.david
+                show_background: false
+                show_state: true
+          - type: heading
+            icon: mdi:account
+            heading: Personal
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: input_boolean.notifications_davids_iphone
+                name: My Notifications
+                template: switch_template
+                variables:
+                  icon_on: mdi:cellphone-message
+                  icon_off: mdi:cellphone-message-off
+                  color: var(--purple)
+            columns: 2
+          - type: heading
+            icon: mdi:home
+            heading: Home
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: custom:button-card
+                template: switch_template
+                entity: switch.wright_guest
+                name: Guest WIFI
+                variables:
+                  icon_on: mdi:wifi
+                  icon_off: mdi:wifi-off
+                  color: var(--blue)
+            columns: 2
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#anna"
+            name: Anna
+            icon: mdi:face-woman
+            bg_opacity: 100
+            hide_backdrop: true
+            bg_blur: 100
+            bg_color: var(--contrast1)
+          - type: heading
+            icon: mdi:account
+            heading: Personal
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: binary_sensor.is_alarm_on
+                name: Alarm
+                label: "[[[return states[\"sensor.wake_time_1\"].state]]]"
+                template: nav_button_small
+                variables:
+                  navigation_path: home#alarm
+                  icon_on: mdi:alarm
+                  icon_off: mdi:alarm-off
+                  background_color_on: var(--yellow)
+                  background_color_off: var(--contrast2)
+                  color_on: var(--black)
+                  color_off: var(--contrast20)
+              - type: custom:button-card
+                entity: input_boolean.motion_lights
+                name: Motion Lights
+                template: switch_template
+                variables:
+                  icon_on: mdi:lightbulb-auto-outline
+                  icon_off: mdi:lightbulb-off-outline
+                  color: var(--green)
+              - type: custom:button-card
+                name: Min Brightness
+                entity: input_number.al_min_brightness_anna
+                show_state: false
+                template: custom_card_number_slider
+                variables:
+                  icon: mdi:brightness-5
+                  label: >-
+                    [[[return
+                    Math.round(states["input_number.al_min_brightness_anna"].state)
+                    + "/255"]]]
+                  color: var(--yellow)
+            columns: 2
+          - type: heading
+            icon: mdi:home
+            heading: Home
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: custom:button-card
+                entity: input_boolean.vacation_mode
+                icon: mdi:weather-sunny-off
+                name: Vacation Mode
+                template: switch_template
+                variables:
+                  icon_on: mdi:weather-sunny
+                  icon_off: mdi:weather-sunny-off
+                  color: var(--orange)
+              - type: custom:button-card
+                entity: switch.voice_assistant_mute_switch
+                icon: mdi:account-tie-voice-off
+                name: Voice Mute Switch
+                template: switch_label_template
+                label: |
+                  [[[
+                    if (entity.state == "on"){
+                      return "Muted";
+                    } else {
+                      return "Off";
+                    }
+                  ]]]
+                variables:
+                  icon_on: mdi:account-tie-voice-off
+                  icon_off: mdi:account-tie-voice
+                  color: var(--red)
+              - type: custom:button-card
+                template: switch_template
+                entity: switch.adguard_protection
+                name: AdGuard
+                variables:
+                  icon_on: mdi:shield-check
+                  icon_off: mdi:shield-off
+                  color: var(--purple)
+              - type: custom:button-card
+                template: switch_template
+                entity: switch.junglemoneyguest
+                name: Guest WIFI
+                variables:
+                  icon_on: mdi:wifi
+                  icon_off: mdi:wifi-off
+                  color: var(--blue)
+            columns: 2
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#weather"
+            name: Weather
+            icon: mdi:weather-partly-cloudy
+            bg_opacity: 100
+            hide_backdrop: true
+            bg_blur: 100
+            bg_color: var(--contrast1)
+            button_type: name
+          - type: custom:clock-weather-card
+            entity: weather.forecast_home
+            forecast_rows: 5
+            locale: en
+            time_format: 12
+            date_pattern: EEE, MMM d
+            hide_today_section: false
+            hide_forecast_section: false
+            hide_clock: false
+            hide_date: false
+            hourly_forecast: true
+            animated_icon: true
+          - type: iframe
+            url: >-
+              https://embed.windy.com/embed2.html?lat=42.0189&lon=-87.8023&detailLat=42.0189&detailLon=-87.8023&width=650&height=450&zoom=9&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1
+            aspect_ratio: 80%
+          - type: heading
+            icon: mdi:thermometer
+            heading: Current Conditions
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: tile
+                entity: sensor.openweathermap_temperature
+                name: Temperature
+                icon: mdi:thermometer
+                color: orange
+              - type: tile
+                entity: sensor.openweathermap_feels_like_temperature
+                name: Feels Like
+                icon: mdi:thermometer-lines
+                color: red
+              - type: tile
+                entity: sensor.openweathermap_humidity
+                name: Humidity
+                icon: mdi:water-percent
+                color: blue
+              - type: tile
+                entity: sensor.openweathermap_wind_speed
+                name: Wind
+                icon: mdi:weather-windy
+                color: teal
+              - type: tile
+                entity: sensor.openweathermap_uv_index
+                name: UV Index
+                icon: mdi:sun-wireless
+                color: yellow
+              - type: tile
+                entity: sensor.openweathermap_visibility
+                name: Visibility
+                icon: mdi:eye
+                color: cyan
+            columns: 2
+          - type: heading
+            icon: mdi:heart-pulse
+            heading: Health Indices
+            heading_style: title
+          - square: false
+            type: grid
+            cards:
+              - type: tile
+                entity: sensor.air_quality_index
+                name: Air Quality
+                icon: mdi:air-filter
+                color: green
+              - type: tile
+                entity: sensor.allergy_index_today
+                name: Allergy Index
+                icon: mdi:flower-pollen
+                color: amber
+              - type: tile
+                entity: sensor.asthma_index_today
+                name: Asthma Index
+                icon: mdi:lungs
+                color: purple
+              - type: tile
+                entity: sensor.cold_flu_index_today
+                name: Cold & Flu
+                icon: mdi:virus
+                color: red
+            columns: 2
+          - type: conditional
+            conditions:
+              - condition: numeric_state
+                entity: sensor.nws_alerts_alerts
+                above: 0
+            card:
+              type: vertical-stack
+              cards:
+                - type: heading
+                  icon: mdi:alert-circle
+                  heading: Weather Alerts
+                  heading_style: title
+                - type: markdown
+                  content: >-
+                    {{ state_attr('sensor.nws_alerts_alerts', 'alerts') |
+                    map(attribute='title') | join('\n\n') if
+                    state_attr('sensor.nws_alerts_alerts', 'alerts') else 'No
+                    active alerts' }}
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            name: Shopping List
+            icon: mdi:cart-outline
+            hash: "#shopping"
+            button_type: name
+            card_layout: large
+            sub_button:
+              - icon: mdi:sync
+                tap_action:
+                  action: call-service
+                  service: script.sync_shopping_list
+                show_background: false
+          - type: todo-list
+            entity: todo.shopping_list
+            card_mod:
+              style: |
+                ha-card {
+                  background: var(--contrast2);
+                }
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Sync with iCloud
+            icon: mdi:apple-icloud
+            tap_action:
+              action: call-service
+              service: script.sync_shopping_list
+            styles: |
+              .bubble-button-card-container {
+                background: var(--contrast3);
+              }
+    column_span: 3
+    view_layout:
+      grid-area: Hidden
+type: custom:grid-layout
+layout:
+  grid-template-columns: 33.3% 33.3% 33.3%
+  grid-template-rows: auto
+  grid-gap: 16px
+  grid-template-areas: |
+    "Header Header Header"
+    "Weather Speakers Cameras"
+    "Overview Climate Security"
+    "Hidden Hidden Hidden"
+card_mod:
+  style: |
+    :host {
+      touch-action: pan-y !important;
+      overscroll-behavior-x: none !important;
+    }
+theme: Visonos

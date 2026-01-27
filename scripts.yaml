@@ -1,0 +1,62 @@
+vacuum_clean_selected_rooms:
+  alias: Vacuum Clean Selected Rooms
+  mode: single
+  sequence:
+  - target:
+      entity_id: vacuum.p10_pro_ultra
+    data:
+      segments: "{% set rooms = [] %} {% if is_state('input_boolean.vacuum_kitchen',
+        'on') %}\n  {% set rooms = rooms + [1] %}\n{% endif %} {% if is_state('input_boolean.vacuum_living_room',
+        'on') %}\n  {% set rooms = rooms + [3] %}\n{% endif %} {% if is_state('input_boolean.vacuum_hallway',
+        'on') %}\n  {% set rooms = rooms + [4] %}\n{% endif %} {% if is_state('input_boolean.vacuum_first_floor_bathroom',
+        'on') %}\n  {% set rooms = rooms + [5] %}\n{% endif %} {% if is_state('input_boolean.vacuum_master_bedroom',
+        'on') %}\n  {% set rooms = rooms + [6] %}\n{% endif %} {% if is_state('input_boolean.vacuum_east_bedroom',
+        'on') %}\n  {% set rooms = rooms + [8] %}\n{% endif %} {% if is_state('input_boolean.vacuum_west_bedroom',
+        'on') %}\n  {% set rooms = rooms + [9] %}\n{% endif %} {% if is_state('input_boolean.vacuum_master_bathroom',
+        'on') %}\n  {% set rooms = rooms + [10] %}\n{% endif %} {{ rooms }}\n"
+    action: dreame_vacuum.vacuum_clean_segment
+  - target:
+      entity_id:
+      - input_boolean.vacuum_kitchen
+      - input_boolean.vacuum_living_room
+      - input_boolean.vacuum_hallway
+      - input_boolean.vacuum_first_floor_bathroom
+      - input_boolean.vacuum_master_bedroom
+      - input_boolean.vacuum_east_bedroom
+      - input_boolean.vacuum_west_bedroom
+      - input_boolean.vacuum_master_bathroom
+    action: input_boolean.turn_off
+sync_shopping_list:
+  alias: Sync Shopping List
+  description: Triggers iPhone to sync shopping list with iCloud
+  mode: single
+  sequence:
+  - service: notify.mobile_app_davids_iphone
+    data:
+      title: Shopping List
+      message: Sync requested
+      data:
+        shortcut:
+          name: Sync Shopping List to HA
+          input: sync
+  - service: persistent_notification.create
+    data:
+      title: Shopping Sync
+      message: Sync request sent to iPhone
+sync_chores_list:
+  alias: Sync Chores List
+  description: Triggers iPhone to sync chores list with iCloud
+  mode: single
+  sequence:
+  - service: notify.mobile_app_davids_iphone
+    data:
+      title: Chores List
+      message: Sync requested
+      data:
+        shortcut:
+          name: Sync Chores List to HA
+          input: sync
+  - service: persistent_notification.create
+    data:
+      title: Chores Sync
+      message: Sync request sent to iPhone

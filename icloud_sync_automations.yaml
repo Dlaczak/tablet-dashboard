@@ -1,0 +1,243 @@
+# ============================================================
+# iPHONE/iCLOUD SYNC AUTOMATIONS
+# ============================================================
+# Add these to your Home Assistant:
+# - Automations: Settings > Automations & Scenes
+# - Scripts: Settings > Automations & Scenes > Scripts
+# - Helpers: Settings > Devices & Services > Helpers
+#
+# Required Helpers (create these first):
+# - todo.shopping_list (or use built-in shopping list)
+# - todo.chores (To-do list helper)
+# - input_datetime.iphone_wake_alarm (Date and/or time helper)
+# ============================================================
+
+# ============================================================
+# SHOPPING LIST SYNC
+# ============================================================
+
+automation:
+  # ------------------------------------------------------------
+  # Shopping List - Receive from iPhone
+  # ------------------------------------------------------------
+  - id: shopping_list_sync_from_icloud
+    alias: "Shopping List - Sync from iCloud"
+    description: "Receives shopping list items from iPhone Shortcut"
+    trigger:
+      - platform: webhook
+        webhook_id: shopping_list_sync
+        allowed_methods:
+          - POST
+        local_only: false
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'sync' }}"
+            sequence:
+              - service: system_log.write
+                data:
+                  message: "Shopping list sync received: {{ trigger.json.items }}"
+                  level: info
+              - repeat:
+                  for_each: "{{ trigger.json.items }}"
+                  sequence:
+                    - service: todo.add_item
+                      target:
+                        entity_id: todo.shopping_list
+                      data:
+                        item: "{{ repeat.item }}"
+              - service: persistent_notification.create
+                data:
+                  title: "Shopping List Synced"
+                  message: "{{ trigger.json.items | length }} items synced from iCloud"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'add' }}"
+            sequence:
+              - service: todo.add_item
+                target:
+                  entity_id: todo.shopping_list
+                data:
+                  item: "{{ trigger.json.item }}"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'clear_and_sync' }}"
+            sequence:
+              - service: todo.remove_completed_items
+                target:
+                  entity_id: todo.shopping_list
+              - repeat:
+                  for_each: "{{ trigger.json.items }}"
+                  sequence:
+                    - service: todo.add_item
+                      target:
+                        entity_id: todo.shopping_list
+                      data:
+                        item: "{{ repeat.item }}"
+
+  # ============================================================
+  # CHORES LIST SYNC
+  # ============================================================
+
+  # ------------------------------------------------------------
+  # Chores List - Receive from iPhone
+  # ------------------------------------------------------------
+  - id: chores_list_sync_from_icloud
+    alias: "Chores List - Sync from iCloud"
+    description: "Receives chores list items from iPhone Shortcut"
+    trigger:
+      - platform: webhook
+        webhook_id: chores_list_sync
+        allowed_methods:
+          - POST
+        local_only: false
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'sync' }}"
+            sequence:
+              - service: system_log.write
+                data:
+                  message: "Chores list sync received: {{ trigger.json.items }}"
+                  level: info
+              - repeat:
+                  for_each: "{{ trigger.json.items }}"
+                  sequence:
+                    - service: todo.add_item
+                      target:
+                        entity_id: todo.chores
+                      data:
+                        item: "{{ repeat.item }}"
+              - service: persistent_notification.create
+                data:
+                  title: "Chores List Synced"
+                  message: "{{ trigger.json.items | length }} chores synced from iCloud"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'add' }}"
+            sequence:
+              - service: todo.add_item
+                target:
+                  entity_id: todo.chores
+                data:
+                  item: "{{ trigger.json.item }}"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.json.action == 'clear_and_sync' }}"
+            sequence:
+              - service: todo.remove_completed_items
+                target:
+                  entity_id: todo.chores
+              - repeat:
+                  for_each: "{{ trigger.json.items }}"
+                  sequence:
+                    - service: todo.add_item
+                      target:
+                        entity_id: todo.chores
+                      data:
+                        item: "{{ repeat.item }}"
+
+  # ============================================================
+  # WAKE ALARM SYNC
+  # ============================================================
+
+  # ------------------------------------------------------------
+  # Wake Alarm - Receive from iPhone Sleep Schedule
+  # ------------------------------------------------------------
+  - id: wake_alarm_sync_from_iphone
+    alias: "Wake Alarm - Sync from iPhone"
+    description: "Receives wake alarm time from iPhone Sleep Schedule via Shortcut"
+    trigger:
+      - platform: webhook
+        webhook_id: wake_alarm_sync
+        allowed_methods:
+          - POST
+        local_only: false
+    action:
+      - service: system_log.write
+        data:
+          message: "Wake alarm sync received: {{ trigger.json.wake_time }}"
+          level: info
+
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.iphone_wake_alarm
+        data:
+          datetime: "{{ trigger.json.wake_time }}"
+
+      - service: persistent_notification.create
+        data:
+          title: "Wake Alarm Synced"
+          message: "Wake time set to {{ trigger.json.wake_time }}"
+
+# ============================================================
+# SCRIPTS
+# ============================================================
+
+script:
+  # ------------------------------------------------------------
+  # Shopping List Scripts
+  # ------------------------------------------------------------
+  sync_shopping_list:
+    alias: "Sync Shopping List"
+    description: "Triggers iPhone to sync shopping list with iCloud"
+    sequence:
+      - service: notify.mobile_app_YOUR_IPHONE
+        data:
+          title: "Shopping List"
+          message: "Sync requested"
+          data:
+            shortcut:
+              name: "Sync Shopping List to HA"
+              input: "sync"
+      - service: persistent_notification.create
+        data:
+          title: "Shopping Sync"
+          message: "Sync request sent to iPhone"
+
+  # ------------------------------------------------------------
+  # Chores List Scripts
+  # ------------------------------------------------------------
+  sync_chores_list:
+    alias: "Sync Chores List"
+    description: "Triggers iPhone to sync chores list with iCloud"
+    sequence:
+      - service: notify.mobile_app_YOUR_IPHONE
+        data:
+          title: "Chores List"
+          message: "Sync requested"
+          data:
+            shortcut:
+              name: "Sync Chores List to HA"
+              input: "sync"
+      - service: persistent_notification.create
+        data:
+          title: "Chores Sync"
+          message: "Sync request sent to iPhone"
+
+# ============================================================
+# WEBHOOK URLS
+# ============================================================
+# Shopping List: https://YOUR_HA_URL/api/webhook/shopping_list_sync
+# Chores List:   https://YOUR_HA_URL/api/webhook/chores_list_sync
+# Wake Alarm:    https://YOUR_HA_URL/api/webhook/wake_alarm_sync
+#
+# Example POST bodies:
+#
+# Shopping/Chores List:
+# {
+#   "action": "sync",
+#   "items": ["Item 1", "Item 2", "Item 3"]
+# }
+#
+# Wake Alarm:
+# {
+#   "wake_time": "2024-01-15T06:30:00"
+# }
+# ============================================================

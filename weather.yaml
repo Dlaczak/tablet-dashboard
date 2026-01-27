@@ -1,0 +1,290 @@
+title: Weather
+path: weather
+icon: mdi:weather-partly-cloudy
+panel: true
+cards:
+  - type: custom:navbar-card
+    desktop:
+      position: bottom
+      min_width: 768
+      show_labels: true
+    mobile:
+      position: bottom
+      show_labels: true
+    routes:
+      - icon: mdi:home-outline
+        icon_selected: mdi:home-assistant
+        url: /lovelace-homio/home
+        label: Home
+      - icon: mdi:sofa-outline
+        icon_selected: mdi:sofa
+        label: Rooms
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:sofa-outline
+            url: /lovelace-homio/home#living-room
+            label: Living Room
+          - icon: mdi:silverware-variant
+            url: /lovelace-homio/home#kitchen
+            label: Kitchen
+          - icon: mdi:bed-king-outline
+            url: /lovelace-homio/home#master-suite
+            label: Master Suite
+          - icon: mdi:bed-outline
+            url: /lovelace-homio/home#bedrooms
+            label: Bedrooms
+          - icon: mdi:monitor
+            url: /lovelace-homio/home#office
+            label: Office
+          - icon: mdi:stairs-down
+            url: /lovelace-homio/home#basement
+            label: Basement
+          - icon: mdi:tools
+            url: /lovelace-homio/home#basement-utility
+            label: Basement Utility
+      - icon: mdi:music
+        url: /lovelace-homio/music
+        label: Music
+        badge:
+          show: >
+            [[[ return states['media_player.living_room'].state === 'playing'
+            ]]]
+          color: var(--green-color)
+      - icon: mdi:shield-outline
+        icon_selected: mdi:security
+        url: /lovelace-homio/security
+        label: Security
+        badge:
+          show: >
+            [[[ return states['binary_sensor.door_sensor_door'].state === 'on'
+            || states['binary_sensor.door_sensor_door_2'].state === 'on' ]]]
+          color: var(--red-color)
+      - icon: mdi:weather-partly-cloudy
+        url: /lovelace-homio/weather
+        label: Weather
+        selected: |
+          [[[
+            return location.pathname.includes('/weather');
+          ]]]
+      - icon: mdi:dots-horizontal
+        label: More
+        badge:
+          show: |
+            [[[
+              if (states['update.home_assistant_core_update'].state == "on") return true;
+              else if (states['update.home_assistant_supervisor_update'].state == "on") return true;
+              else if (states['sensor.ipad_battery_level'].state < 20) return true;
+              else return false;
+            ]]]
+          color: var(--red-color)
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:server-outline
+            url: /lovelace-homio/server
+            label: Server
+          - icon: mdi:cart
+            url: /dashboard-bring/home
+            label: Shopping List
+          - icon: mdi:cog
+            url: /config/dashboard
+            label: Settings
+          - icon: mdi:hammer
+            url: /developer-tools/yaml
+            label: Developer Tools
+          - icon: mdi:printer-3d
+            url: /lovelace-homio/printers
+            label: Printers
+    styles: |
+      .navbar {
+        --navbar-primary-color: var(--purple-color);
+        background: var(--contrast2);
+      }
+  - type: custom:clock-weather-card
+    entity: weather.openweathermap
+    sun_entity: sun.sun
+    temperature_sensor: sensor.openweathermap_temperature
+    humidity_sensor: sensor.openweathermap_humidity
+    weather_icon_type: line
+    animated_icon: true
+    forecast_rows: 5
+    time_format: 12
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: separator
+    name: Current Conditions
+    icon: mdi:weather-partly-cloudy
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.openweathermap_temperature
+    name: Temperature
+    icon: mdi:thermometer
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.openweathermap_feels_like_temperature
+    name: Feels Like
+    icon: mdi:thermometer-lines
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.openweathermap_humidity
+    name: Humidity
+    icon: mdi:water-percent
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.openweathermap_wind_speed
+    name: Wind
+    icon: mdi:weather-windy
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.openweathermap_pressure
+    name: Pressure
+    icon: mdi:gauge
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.openweathermap_uv_index
+    name: UV Index
+    icon: mdi:sun-wireless
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: 7-Day Forecast
+    icon: mdi:calendar-week
+    view_layout:
+      grid-column: span 8
+  - type: weather-forecast
+    entity: weather.openweathermap
+    forecast_type: daily
+    show_current: false
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: separator
+    name: Air Quality
+    icon: mdi:air-filter
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.air_quality_index
+    name: AQI
+    icon: mdi:leaf
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.allergy_index_today
+    name: Allergy
+    icon: mdi:flower-pollen
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.asthma_index_today
+    name: Asthma
+    icon: mdi:lungs
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: Weather Alerts
+    icon: mdi:alert-circle
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.nws_alerts_alerts
+    name: Active Alerts
+    icon: mdi:alert
+    show_state: true
+    view_layout:
+      grid-column: span 4
+  - type: custom:bubble-card
+    card_type: separator
+    name: Indoor Climate
+    icon: mdi:home-thermometer
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.ecowitt_temperature_indoor
+    name: Indoor Temp
+    icon: mdi:thermometer
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.ecowitt_humidity_humidityin
+    name: Indoor Humidity
+    icon: mdi:water-percent
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.living_room_temperature
+    name: Living Room
+    icon: mdi:sofa
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: Radar
+    icon: mdi:radar
+    view_layout:
+      grid-column: span 8
+  - type: iframe
+    url: >-
+      https://embed.windy.com/embed2.html?lat=39.0&lon=-77.0&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1
+    aspect_ratio: "16:9"
+    view_layout:
+      grid-column: span 8
+
+type: custom:grid-layout
+layout:
+  grid-template-columns: repeat(8, 1fr)
+  grid-template-rows: auto
+  mediaquery:
+    "(max-width: 600px)":
+      grid-template-columns: repeat(4, 1fr)
+    "(max-width: 1024px) and (min-width: 601px)":
+      grid-template-columns: repeat(6, 1fr)
+theme: Visonos

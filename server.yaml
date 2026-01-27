@@ -1,0 +1,347 @@
+title: Server
+path: server
+icon: mdi:server
+panel: true
+cards:
+  - type: custom:navbar-card
+    desktop:
+      position: bottom
+      min_width: 768
+      show_labels: true
+    mobile:
+      position: bottom
+      show_labels: true
+    routes:
+      - icon: mdi:home-outline
+        icon_selected: mdi:home-assistant
+        url: /lovelace-homio/home
+        label: Home
+      - icon: mdi:sofa-outline
+        icon_selected: mdi:sofa
+        label: Rooms
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:sofa-outline
+            url: /lovelace-homio/home#living-room
+            label: Living Room
+          - icon: mdi:silverware-variant
+            url: /lovelace-homio/home#kitchen
+            label: Kitchen
+          - icon: mdi:bed-king-outline
+            url: /lovelace-homio/home#master-suite
+            label: Master Suite
+          - icon: mdi:bed-outline
+            url: /lovelace-homio/home#bedrooms
+            label: Bedrooms
+          - icon: mdi:monitor
+            url: /lovelace-homio/home#office
+            label: Office
+          - icon: mdi:stairs-down
+            url: /lovelace-homio/home#basement
+            label: Basement
+          - icon: mdi:tools
+            url: /lovelace-homio/home#basement-utility
+            label: Basement Utility
+      - icon: mdi:music
+        url: /lovelace-homio/music
+        label: Music
+        badge:
+          show: >
+            [[[ return states['media_player.living_room'].state === 'playing'
+            ]]]
+          color: var(--green-color)
+      - icon: mdi:shield-outline
+        icon_selected: mdi:security
+        url: /lovelace-homio/security
+        label: Security
+        badge:
+          show: >
+            [[[ return states['binary_sensor.door_sensor_door'].state === 'on'
+            || states['binary_sensor.door_sensor_door_2'].state === 'on' ]]]
+          color: var(--red-color)
+      - icon: mdi:weather-partly-cloudy
+        url: /lovelace-homio/weather
+        label: Weather
+      - icon: mdi:dots-horizontal
+        label: More
+        badge:
+          show: |
+            [[[
+              if (states['update.home_assistant_core_update'].state == "on") return true;
+              else if (states['update.home_assistant_supervisor_update'].state == "on") return true;
+              else if (states['sensor.ipad_battery_level'].state < 20) return true;
+              else return false;
+            ]]]
+          color: var(--red-color)
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:server-outline
+            url: /lovelace-homio/server
+            label: Server
+          - icon: mdi:cart
+            url: /dashboard-bring/home
+            label: Shopping List
+          - icon: mdi:cog
+            url: /config/dashboard
+            label: Settings
+          - icon: mdi:hammer
+            url: /developer-tools/yaml
+            label: Developer Tools
+          - icon: mdi:printer-3d
+            url: /lovelace-homio/printers
+            label: Printers
+    styles: |
+      .navbar {
+        --navbar-primary-color: var(--purple-color);
+        background: var(--contrast2);
+      }
+  - type: custom:bubble-card
+    card_type: separator
+    name: Home Assistant
+    icon: mdi:home-assistant
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.system_monitor_processor_use
+    name: CPU
+    icon: mdi:chip
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.system_monitor_swap_usage
+    name: Memory
+    icon: mdi:memory
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.system_monitor_last_boot
+    name: Last Boot
+    icon: mdi:restart
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.backup_last_successful_automatic_backup
+    name: Last Backup
+    icon: mdi:backup-restore
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: Network
+    icon: mdi:lan
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.dream_machine_special_edition_state
+    name: Dream Machine SE
+    icon: mdi:router-network
+    show_state: true
+    view_layout:
+      grid-column: span 4
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.dream_machine_special_edition_cpu_utilization
+    name: UDMSE CPU
+    icon: mdi:chip
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.dream_machine_special_edition_memory_utilization
+    name: UDMSE Memory
+    icon: mdi:memory
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.dream_machine_special_edition_storage_utilization
+    name: UDMSE Storage
+    icon: mdi:harddisk
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: UniFi Devices
+    icon: mdi:wifi
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.u6_mesh_stairs_state
+    name: U6 Stairs
+    icon: mdi:access-point
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.u6_mesh_hallway_state
+    name: U6 Hallway
+    icon: mdi:access-point
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.u6_mesh_basement_state
+    name: U6 Basement
+    icon: mdi:access-point
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.usw_pro_24_state
+    name: USW Pro 24
+    icon: mdi:lan
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.usw_flex_mini_state
+    name: Flex Mini
+    icon: mdi:lan
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.uk_ultra_state
+    name: UK Ultra
+    icon: mdi:access-point
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.wright
+    name: Wright
+    icon: mdi:wifi
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.wright_iot
+    name: Wright-IoT
+    icon: mdi:wifi
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.wright_guest
+    name: Wright-Guest
+    icon: mdi:wifi
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: Frigate
+    icon: mdi:cctv
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.doorbell_all_count
+    name: Doorbell
+    icon: mdi:doorbell
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.front_camera_all_count
+    name: Front
+    icon: mdi:camera
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.driveway_all_count
+    name: Driveway
+    icon: mdi:road
+    show_state: true
+    view_layout:
+      grid-column: span 2
+  - type: custom:bubble-card
+    card_type: separator
+    name: Zigbee
+    icon: mdi:zigbee
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.slzb_06_connection_mode
+    name: SLZB-06 Coordinator
+    icon: mdi:zigbee
+    show_state: true
+    view_layout:
+      grid-column: span 4
+  - type: custom:bubble-card
+    card_type: separator
+    name: Available Updates
+    icon: mdi:update
+    view_layout:
+      grid-column: span 8
+  - type: custom:auto-entities
+    show_empty: false
+    card:
+      type: entities
+    filter:
+      include:
+        - domain: update
+          state: "on"
+      exclude:
+        - entity_id: "*firmware*"
+    view_layout:
+      grid-column: span 8
+
+type: custom:grid-layout
+layout:
+  grid-template-columns: repeat(8, 1fr)
+  grid-template-rows: auto
+  mediaquery:
+    "(max-width: 600px)":
+      grid-template-columns: repeat(4, 1fr)
+    "(max-width: 1024px) and (min-width: 601px)":
+      grid-template-columns: repeat(6, 1fr)
+theme: Visonos
