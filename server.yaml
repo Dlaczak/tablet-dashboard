@@ -334,6 +334,24 @@ cards:
         - entity_id: "*firmware*"
     view_layout:
       grid-column: span 8
+  - type: custom:bubble-card
+    card_type: separator
+    name: Dashboard Sync
+    icon: mdi:github
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: button
+    button_type: name
+    name: Sync from GitHub
+    icon: mdi:source-branch-sync
+    tap_action:
+      action: call-service
+      service: automation.trigger
+      target:
+        entity_id: automation.git_sync_dashboard
+    view_layout:
+      grid-column: span 4
 
 type: custom:grid-layout
 layout:

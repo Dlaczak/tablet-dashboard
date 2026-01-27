@@ -525,3 +525,20 @@
       right_button: Dismiss
       timeout: 20000
   mode: single
+# ------------------------------------------------------------
+# Git Sync Dashboard from GitHub
+# ------------------------------------------------------------
+- id: git_sync_dashboard
+  alias: Git Sync Dashboard
+  description: Pulls latest dashboard YAML files from GitHub every 30 minutes
+  trigger:
+  - platform: time_pattern
+    minutes: "/30"
+  conditions: []
+  actions:
+  - action: shell_command.git_sync_dashboard
+  - action: persistent_notification.create
+    data:
+      title: Dashboard Synced
+      message: 'Dashboard files updated from GitHub at {{ now().strftime(''%I:%M %p'') }}'
+  mode: single
