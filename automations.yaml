@@ -501,3 +501,27 @@
       title: Wake Alarm Synced
       message: 'Wake time set to {{ trigger.json.wake_time }}'
   mode: single
+# ------------------------------------------------------------
+# Doorbell Ring - Show Video Popup
+# ------------------------------------------------------------
+- id: doorbell_ring_popup
+  alias: Doorbell Ring - Show Video Popup
+  description: Shows doorbell camera feed on all browsers when doorbell is pressed
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.front_door_visitor
+    to: 'on'
+  action:
+  - service: browser_mod.popup
+    data:
+      title: Doorbell
+      content:
+        type: picture-entity
+        entity: camera.doorbell
+        camera_view: live
+        show_state: false
+        show_name: false
+      size: wide
+      right_button: Dismiss
+      timeout: 20000
+  mode: single
