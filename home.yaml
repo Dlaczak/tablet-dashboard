@@ -2401,8 +2401,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2440,8 +2438,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2479,8 +2475,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2518,8 +2512,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2557,8 +2549,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2596,8 +2586,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2635,8 +2623,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
@@ -2674,8 +2660,6 @@ cards:
                 show_name: true
                 show_icon: true
                 show_state: false
-                color_type: card
-                color: var(--blue)
                 tap_action:
                   action: call-service
                   service: input_boolean.toggle
