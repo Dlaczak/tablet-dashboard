@@ -3562,9 +3562,9 @@ card_mod:
         touch-action: pan-y !important;
         overscroll-behavior-x: none !important;
         padding: 0 !important;
-        margin: 0 0 0 -20px !important;
-        width: calc(100% + 20px) !important;
-        max-width: calc(100% + 20px) !important;
+        margin: 0 0 0 -132px !important;
+        width: calc(100% + 132px) !important;
+        max-width: calc(100% + 132px) !important;
       }
       :host > #layout {
         padding: 0 !important;

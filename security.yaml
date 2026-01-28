@@ -282,8 +282,8 @@ cards:
       style: |
         :host {
           padding: 0 !important;
-          margin: 0 0 0 -20px !important;
-          width: calc(100% + 20px) !important;
-          max-width: calc(100% + 20px) !important;
+          margin: 0 0 0 -132px !important;
+          width: calc(100% + 132px) !important;
+          max-width: calc(100% + 132px) !important;
         }
 theme: Visonos
