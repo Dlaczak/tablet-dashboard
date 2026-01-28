@@ -14,7 +14,7 @@ cards:
     routes:
       - icon: mdi:home-outline
         icon_selected: mdi:home-assistant
-        url: /lovelace-homio/home
+        url: /lovelace-tablet/home
         label: Home
       - icon: mdi:sofa-outline
         icon_selected: mdi:sofa
@@ -23,28 +23,28 @@ cards:
           action: open-popup
         popup:
           - icon: mdi:sofa-outline
-            url: /lovelace-homio/home#living-room
+            url: /lovelace-tablet/home#living-room
             label: Living Room
           - icon: mdi:silverware-variant
-            url: /lovelace-homio/home#kitchen
+            url: /lovelace-tablet/home#kitchen
             label: Kitchen
           - icon: mdi:bed-king-outline
-            url: /lovelace-homio/home#master-suite
+            url: /lovelace-tablet/home#master-suite
             label: Master Suite
           - icon: mdi:bed-outline
-            url: /lovelace-homio/home#bedrooms
+            url: /lovelace-tablet/home#bedrooms
             label: Bedrooms
           - icon: mdi:monitor
-            url: /lovelace-homio/home#office
+            url: /lovelace-tablet/home#office
             label: Office
           - icon: mdi:stairs-down
-            url: /lovelace-homio/home#basement
+            url: /lovelace-tablet/home#basement
             label: Basement
           - icon: mdi:tools
-            url: /lovelace-homio/home#basement-utility
+            url: /lovelace-tablet/home#basement-utility
             label: Basement Utility
       - icon: mdi:music
-        url: /lovelace-homio/music
+        url: /lovelace-tablet/music
         label: Music
         badge:
           show: >
@@ -53,7 +53,7 @@ cards:
           color: var(--green-color)
       - icon: mdi:shield-outline
         icon_selected: mdi:security
-        url: /lovelace-homio/security
+        url: /lovelace-tablet/security
         label: Security
         badge:
           show: >
@@ -65,7 +65,7 @@ cards:
             return location.pathname.includes('/security');
           ]]]
       - icon: mdi:weather-partly-cloudy
-        url: /lovelace-homio/weather
+        url: /lovelace-tablet/weather
         label: Weather
       - icon: mdi:dots-horizontal
         label: More
@@ -82,7 +82,7 @@ cards:
           action: open-popup
         popup:
           - icon: mdi:server-outline
-            url: /lovelace-homio/server
+            url: /lovelace-tablet/server
             label: Server
           - icon: mdi:cart
             url: /dashboard-bring/home
@@ -94,7 +94,7 @@ cards:
             url: /developer-tools/yaml
             label: Developer Tools
           - icon: mdi:printer-3d
-            url: /lovelace-homio/printers
+            url: /lovelace-tablet/printers
             label: Printers
     styles: |
       .navbar {

@@ -19,7 +19,13 @@ FILES=(
   printers.yaml
   automations.yaml
   scripts.yaml
-  button_card_templates.yaml
+  button_card_templates_data.yaml
+  tablet.yaml
+)
+
+# Directories to sync
+DIRS=(
+  scripts
 )
 
 logger -t "$LOG_TAG" "Starting dashboard sync..."
@@ -46,4 +52,13 @@ for f in "${FILES[@]}"; do
   fi
 done
 
-logger -t "$LOG_TAG" "Sync complete: $COPIED files updated"
+# Copy directories
+for d in "${DIRS[@]}"; do
+  if [ -d "$TEMP_DIR/$d" ]; then
+    mkdir -p "$CONFIG_DIR/$d"
+    cp -r "$TEMP_DIR/$d/"* "$CONFIG_DIR/$d/"
+    COPIED=$((COPIED + 1))
+  fi
+done
+
+logger -t "$LOG_TAG" "Sync complete: $COPIED items updated"

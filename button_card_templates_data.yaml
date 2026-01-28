@@ -1,0 +1,393 @@
+# ============================================================
+# BUTTON CARD TEMPLATES (data-only, included by tablet.yaml)
+# ============================================================
+light_rgb:
+  show_name: true
+  show_icon: true
+  show_state: false
+  tap_action:
+    action: toggle
+    haptic: light
+  hold_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: |
+          [[[
+            if (entity.state == "on") return "var(--yellow)";
+            else return "var(--contrast2)";
+          ]]]
+    icon:
+      - color: |
+          [[[
+            if (entity.state == "on") return "var(--black)";
+            else return "var(--contrast20)";
+          ]]]
+    name:
+      - color: |
+          [[[
+            if (entity.state == "on") return "var(--black)";
+            else return "var(--contrast20)";
+          ]]]
+      - font-size: 12px
+      - font-weight: 500
+
+light_switch:
+  show_name: true
+  show_icon: true
+  show_state: false
+  tap_action:
+    action: toggle
+    haptic: light
+  hold_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: |
+          [[[
+            if (entity.state == "on") return "var(--yellow)";
+            else return "var(--contrast2)";
+          ]]]
+    icon:
+      - color: |
+          [[[
+            if (entity.state == "on") return "var(--black)";
+            else return "var(--contrast20)";
+          ]]]
+    name:
+      - color: |
+          [[[
+            if (entity.state == "on") return "var(--black)";
+            else return "var(--contrast20)";
+          ]]]
+      - font-size: 12px
+      - font-weight: 500
+
+button_template:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_state: false
+  tap_action:
+    action: toggle
+    haptic: light
+  hold_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.background_color_on || "var(--green)";
+            else if (entity.state == "on") return variables.background_color_on || "var(--green)";
+            else return variables.background_color_off || "var(--contrast2)";
+          ]]]
+    icon:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else if (entity.state == "on") return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+    name:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else if (entity.state == "on") return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+      - font-size: 12px
+      - font-weight: 500
+    label:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else if (entity.state == "on") return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+      - font-size: 10px
+  state:
+    - value: "on"
+      icon: "[[[ return variables.icon_on || 'mdi:toggle-switch' ]]]"
+    - value: "off"
+      icon: "[[[ return variables.icon_off || 'mdi:toggle-switch-off' ]]]"
+
+switch_template:
+  show_name: true
+  show_icon: true
+  show_state: false
+  tap_action:
+    action: toggle
+    haptic: light
+  hold_action:
+    action: more-info
+  icon: "[[[ return variables.icon_off || 'mdi:toggle-switch-off' ]]]"
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: |
+          [[[
+            if (entity.state == "on") return variables.color || "var(--blue)";
+            else return "var(--contrast2)";
+          ]]]
+    icon:
+      - color: |
+          [[[
+            if (entity.state == "on") return "var(--black)";
+            else return "var(--contrast20)";
+          ]]]
+    name:
+      - color: |
+          [[[
+            if (entity.state == "on") return "var(--black)";
+            else return "var(--contrast20)";
+          ]]]
+      - font-size: 12px
+      - font-weight: 500
+  state:
+    - value: "on"
+      icon: "[[[ return variables.icon_on || 'mdi:toggle-switch' ]]]"
+    - value: "off"
+      icon: "[[[ return variables.icon_off || 'mdi:toggle-switch-off' ]]]"
+
+nav_button:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_state: false
+  tap_action:
+    action: navigate
+    navigation_path: "[[[ return variables.navigation_path ]]]"
+    haptic: light
+  hold_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: var(--contrast2)
+    icon:
+      - color: var(--contrast20)
+    name:
+      - color: var(--contrast20)
+      - font-size: 12px
+      - font-weight: 500
+    label:
+      - color: var(--contrast14)
+      - font-size: 10px
+
+nav_button_small:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_state: false
+  tap_action:
+    action: navigate
+    navigation_path: "[[[ return variables.navigation_path ]]]"
+    haptic: light
+  hold_action:
+    action: more-info
+  icon: "[[[ return variables.icon_off || 'mdi:help' ]]]"
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 10px
+      - background-color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.background_color_on || "var(--green)";
+            else return variables.background_color_off || "var(--contrast2)";
+          ]]]
+    icon:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+    name:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+      - font-size: 11px
+      - font-weight: 500
+    label:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+      - font-size: 10px
+  state:
+    - value: "[[[ return variables.state_on ]]]"
+      icon: "[[[ return variables.icon_on ]]]"
+
+nav_button_state_small:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_state: false
+  tap_action:
+    action: navigate
+    navigation_path: "[[[ return variables.navigation_path ]]]"
+    haptic: light
+  hold_action:
+    action: more-info
+  icon: "[[[ return variables.icon_off || 'mdi:help' ]]]"
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 10px
+      - background-color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.background_color_on || "var(--green)";
+            else return variables.background_color_off || "var(--contrast2)";
+          ]]]
+    icon:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+    name:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+      - font-size: 11px
+      - font-weight: 500
+    label:
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+      - font-size: 10px
+  state:
+    - value: "[[[ return variables.state_on ]]]"
+      icon: "[[[ return variables.icon_on ]]]"
+
+custom_card_mediaplayer_music:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_entity_picture: true
+  tap_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: var(--contrast2)
+    grid:
+      - grid-template-areas: "'i n' 'i l'"
+      - grid-template-columns: min-content 1fr
+      - column-gap: 12px
+    entity_picture:
+      - width: 60px
+      - height: 60px
+      - border-radius: 8px
+    name:
+      - justify-self: start
+      - font-size: 14px
+      - font-weight: 600
+      - color: var(--contrast20)
+    label:
+      - justify-self: start
+      - font-size: 12px
+      - color: var(--contrast14)
+  label: |
+    [[[
+      if (entity.attributes.media_artist && entity.attributes.media_title)
+        return entity.attributes.media_artist + " - " + entity.attributes.media_title;
+      else if (entity.attributes.media_title)
+        return entity.attributes.media_title;
+      else
+        return entity.state;
+    ]]]
+
+custom_card_mediaplayer_tv:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_entity_picture: true
+  tap_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 12px
+      - background-color: var(--contrast2)
+    grid:
+      - grid-template-areas: "'i n' 'i l'"
+      - grid-template-columns: min-content 1fr
+      - column-gap: 12px
+    entity_picture:
+      - width: 60px
+      - height: 60px
+      - border-radius: 8px
+    name:
+      - justify-self: start
+      - font-size: 14px
+      - font-weight: 600
+      - color: var(--contrast20)
+    label:
+      - justify-self: start
+      - font-size: 12px
+      - color: var(--contrast14)
+  label: |
+    [[[
+      if (entity.attributes.media_title)
+        return entity.attributes.media_title;
+      else
+        return entity.state;
+    ]]]
+
+custom_card_sensor_big:
+  show_name: true
+  show_icon: true
+  show_label: true
+  show_state: false
+  tap_action:
+    action: more-info
+  styles:
+    card:
+      - border-radius: 12px
+      - padding: 16px
+      - background-color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.background_color_on || "var(--green)";
+            else return variables.background_color_off || "var(--contrast2)";
+          ]]]
+    grid:
+      - grid-template-areas: "'i' 'n' 'l'"
+      - grid-template-rows: 1fr min-content min-content
+    icon:
+      - width: 40px
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+    name:
+      - font-size: 14px
+      - font-weight: 600
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast20)";
+          ]]]
+    label:
+      - font-size: 12px
+      - color: |
+          [[[
+            if (variables.state_on && entity.state == variables.state_on) return variables.color_on || "var(--black)";
+            else return variables.color_off || "var(--contrast14)";
+          ]]]
