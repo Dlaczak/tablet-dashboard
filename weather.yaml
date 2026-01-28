@@ -282,8 +282,9 @@ type: custom:grid-layout
 layout:
   grid-template-columns: repeat(8, 1fr)
   grid-template-rows: auto
-  margin: 0
+  margin: 0 0 0 -132px
   padding: 0
+  width: calc(100% + 132px)
   mediaquery:
     "(max-width: 600px)":
       grid-template-columns: repeat(4, 1fr)
