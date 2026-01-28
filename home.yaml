@@ -3542,6 +3542,8 @@ layout:
   grid-template-columns: 1fr 1fr 1fr
   grid-template-rows: auto
   grid-gap: 16px
+  margin: 0
+  padding: 0
   grid-template-areas: |
     "Header Header Header"
     "Weather Speakers Cameras"
@@ -3552,5 +3554,7 @@ card_mod:
     :host {
       touch-action: pan-y !important;
       overscroll-behavior-x: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 theme: Visonos
