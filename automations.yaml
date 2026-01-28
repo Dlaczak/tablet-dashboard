@@ -537,6 +537,11 @@
   conditions: []
   actions:
   - action: shell_command.git_sync_dashboard
+  - delay:
+      seconds: 2
+  - action: automation.reload
+  - action: script.reload
+  - action: homeassistant.reload_core_config
   mode: single
 # ------------------------------------------------------------
 # Water Leak Detection Alert
