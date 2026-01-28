@@ -1,280 +1,289 @@
 title: Security
 path: security
 icon: mdi:shield-home
-panel: false
+panel: true
 cards:
-  - type: custom:navbar-card
-    desktop:
-      position: bottom
-      min_width: 768
-      show_labels: true
-    mobile:
-      position: bottom
-      show_labels: true
-    routes:
-      - icon: mdi:home-outline
-        icon_selected: mdi:home-assistant
-        url: /lovelace-tablet/home
-        label: Home
-      - icon: mdi:sofa-outline
-        icon_selected: mdi:sofa
-        label: Rooms
-        tap_action:
-          action: open-popup
-        popup:
+  - type: vertical-stack
+    cards:
+      - type: custom:navbar-card
+        desktop:
+          position: bottom
+          min_width: 768
+          show_labels: true
+        mobile:
+          position: bottom
+          show_labels: true
+        routes:
+          - icon: mdi:home-outline
+            icon_selected: mdi:home-assistant
+            url: /lovelace-tablet/home
+            label: Home
           - icon: mdi:sofa-outline
-            url: /lovelace-tablet/home#living-room
-            label: Living Room
-          - icon: mdi:silverware-variant
-            url: /lovelace-tablet/home#kitchen
-            label: Kitchen
-          - icon: mdi:bed-king-outline
-            url: /lovelace-tablet/home#master-suite
-            label: Master Suite
-          - icon: mdi:bed-outline
-            url: /lovelace-tablet/home#bedrooms
-            label: Bedrooms
-          - icon: mdi:monitor
-            url: /lovelace-tablet/home#office
-            label: Office
-          - icon: mdi:stairs-down
-            url: /lovelace-tablet/home#basement
-            label: Basement
-          - icon: mdi:tools
-            url: /lovelace-tablet/home#basement-utility
-            label: Basement Utility
-      - icon: mdi:music
-        url: /lovelace-tablet/music
-        label: Music
-        badge:
-          show: >
-            [[[ return states['media_player.living_room'].state === 'playing'
-            ]]]
-          color: var(--green-color)
-      - icon: mdi:shield-outline
-        icon_selected: mdi:security
-        url: /lovelace-tablet/security
-        label: Security
-        badge:
-          show: >
-            [[[ return states['binary_sensor.door_sensor_door'].state === 'on'
-            || states['binary_sensor.door_sensor_door_2'].state === 'on' ]]]
-          color: var(--red-color)
-        selected: |
-          [[[
-            return location.pathname.includes('/security');
-          ]]]
-      - icon: mdi:weather-partly-cloudy
-        url: /lovelace-tablet/weather
-        label: Weather
-      - icon: mdi:dots-horizontal
-        label: More
-        badge:
-          show: |
-            [[[
-              if (states['update.home_assistant_core_update'].state == "on") return true;
-              else if (states['update.home_assistant_supervisor_update'].state == "on") return true;
-              else if (states['sensor.ipad_battery_level'].state < 20) return true;
-              else return false;
-            ]]]
-          color: var(--red-color)
-        tap_action:
-          action: open-popup
-        popup:
-          - icon: mdi:server-outline
-            url: /lovelace-tablet/server
-            label: Server
-          - icon: mdi:cart
-            url: /dashboard-bring/home
-            label: Shopping List
-          - icon: mdi:cog
-            url: /config/dashboard
-            label: Settings
-          - icon: mdi:hammer
-            url: /developer-tools/yaml
-            label: Developer Tools
-          - icon: mdi:printer-3d
-            url: /lovelace-tablet/printers
-            label: Printers
-    styles: |
-      .navbar {
-        --navbar-primary-color: var(--purple-color);
-        background: var(--contrast2);
-      }
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: "#locks"
-    name: Locks
-    icon: mdi:lock
-    width_desktop: 500px
-    bg_opacity: 85
-    bg_blur: 14
-    card:
-      type: vertical-stack
-      cards:
-        - type: custom:bubble-card
-          card_type: button
-          button_type: state
-          entity: lock.front_door_bolt
-          name: Front Door
-          icon: mdi:door
-          show_state: true
-          tap_action:
-            action: toggle
-        - type: custom:bubble-card
-          card_type: button
-          button_type: state
-          entity: lock.level_bolt_matter
-          name: Back Door
-          icon: mdi:door-sliding
-          show_state: true
-          tap_action:
-            action: toggle
-        - type: custom:bubble-card
-          card_type: button
-          button_type: state
-          entity: lock.level_bolt_matter_2
-          name: Side Garage Door
-          icon: mdi:door
-          show_state: true
-          tap_action:
-            action: toggle
-  - type: custom:bubble-card
-    card_type: pop-up
-    hash: "#garage"
-    name: Garage
-    icon: mdi:garage
-    width_desktop: 450px
-    bg_opacity: 85
-    bg_blur: 14
-    card:
-      type: vertical-stack
-      cards:
-        - type: custom:bubble-card
-          card_type: cover
-          entity: cover.ratgdo32_691830_door
-          name: Garage Door
-          icon_open: mdi:garage-open
-          icon_close: mdi:garage
-          show_state: true
-        - type: custom:bubble-card
-          card_type: button
-          button_type: slider
-          entity: light.ratgdo32_691830_light
-          name: Garage Light
-          icon: mdi:lightbulb
-  - type: custom:alarmo-card
-    entity: alarm_control_panel.alarmo
-  - type: custom:bubble-card
-    card_type: separator
-    name: Locks & Entry
-    icon: mdi:lock
-  - type: horizontal-stack
-    cards:
+            icon_selected: mdi:sofa
+            label: Rooms
+            tap_action:
+              action: open-popup
+            popup:
+              - icon: mdi:sofa-outline
+                url: /lovelace-tablet/home#living-room
+                label: Living Room
+              - icon: mdi:silverware-variant
+                url: /lovelace-tablet/home#kitchen
+                label: Kitchen
+              - icon: mdi:bed-king-outline
+                url: /lovelace-tablet/home#master-suite
+                label: Master Suite
+              - icon: mdi:bed-outline
+                url: /lovelace-tablet/home#bedrooms
+                label: Bedrooms
+              - icon: mdi:monitor
+                url: /lovelace-tablet/home#office
+                label: Office
+              - icon: mdi:stairs-down
+                url: /lovelace-tablet/home#basement
+                label: Basement
+              - icon: mdi:tools
+                url: /lovelace-tablet/home#basement-utility
+                label: Basement Utility
+          - icon: mdi:music
+            url: /lovelace-tablet/music
+            label: Music
+            badge:
+              show: >
+                [[[ return states['media_player.living_room'].state === 'playing'
+                ]]]
+              color: var(--green-color)
+          - icon: mdi:shield-outline
+            icon_selected: mdi:security
+            url: /lovelace-tablet/security
+            label: Security
+            badge:
+              show: >
+                [[[ return states['binary_sensor.door_sensor_door'].state === 'on'
+                || states['binary_sensor.door_sensor_door_2'].state === 'on' ]]]
+              color: var(--red-color)
+            selected: |
+              [[[
+                return location.pathname.includes('/security');
+              ]]]
+          - icon: mdi:weather-partly-cloudy
+            url: /lovelace-tablet/weather
+            label: Weather
+          - icon: mdi:dots-horizontal
+            label: More
+            badge:
+              show: |
+                [[[
+                  if (states['update.home_assistant_core_update'].state == "on") return true;
+                  else if (states['update.home_assistant_supervisor_update'].state == "on") return true;
+                  else if (states['sensor.ipad_battery_level'].state < 20) return true;
+                  else return false;
+                ]]]
+              color: var(--red-color)
+            tap_action:
+              action: open-popup
+            popup:
+              - icon: mdi:server-outline
+                url: /lovelace-tablet/server
+                label: Server
+              - icon: mdi:cart
+                url: /dashboard-bring/home
+                label: Shopping List
+              - icon: mdi:cog
+                url: /config/dashboard
+                label: Settings
+              - icon: mdi:hammer
+                url: /developer-tools/yaml
+                label: Developer Tools
+              - icon: mdi:printer-3d
+                url: /lovelace-tablet/printers
+                label: Printers
+        styles: |
+          .navbar {
+            --navbar-primary-color: var(--purple-color);
+            background: var(--contrast2);
+          }
       - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: lock.front_door_bolt
-        name: Front Door
-        icon: mdi:door
-        show_state: true
-        tap_action:
-          action: toggle
+        card_type: pop-up
+        hash: "#locks"
+        name: Locks
+        icon: mdi:lock
+        width_desktop: 500px
+        bg_opacity: 85
+        bg_blur: 14
+        card:
+          type: vertical-stack
+          cards:
+            - type: custom:bubble-card
+              card_type: button
+              button_type: state
+              entity: lock.front_door_bolt
+              name: Front Door
+              icon: mdi:door
+              show_state: true
+              tap_action:
+                action: toggle
+            - type: custom:bubble-card
+              card_type: button
+              button_type: state
+              entity: lock.level_bolt_matter
+              name: Back Door
+              icon: mdi:door-sliding
+              show_state: true
+              tap_action:
+                action: toggle
+            - type: custom:bubble-card
+              card_type: button
+              button_type: state
+              entity: lock.level_bolt_matter_2
+              name: Side Garage Door
+              icon: mdi:door
+              show_state: true
+              tap_action:
+                action: toggle
       - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: lock.level_bolt_matter
-        name: Back Door
-        icon: mdi:door-sliding
-        show_state: true
-        tap_action:
-          action: toggle
-      - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: lock.level_bolt_matter_2
-        name: Side Garage
-        icon: mdi:door
-        show_state: true
-        tap_action:
-          action: toggle
-      - type: custom:bubble-card
-        card_type: cover
-        entity: cover.ratgdo32_691830_door
-        name: Garage
-        icon_open: mdi:garage-open
-        icon_close: mdi:garage
-  - type: custom:bubble-card
-    card_type: separator
-    name: Cameras
-    icon: mdi:cctv
-  - type: horizontal-stack
-    cards:
-      - type: picture-entity
-        entity: camera.doorbell
-        name: Doorbell
-        camera_view: live
-      - type: picture-entity
-        entity: camera.front_camera
-        name: Front Yard
-        camera_view: live
-      - type: picture-entity
-        entity: camera.driveway
-        name: Driveway
-        camera_view: live
-  - type: custom:bubble-card
-    card_type: separator
-    name: Entry Sensors
-    icon: mdi:door-open
-  - type: horizontal-stack
-    cards:
-      - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: binary_sensor.door_sensor_door
-        name: Front Door
-        icon: mdi:door
-        show_state: true
-      - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: binary_sensor.door_sensor_door_2
-        name: Back Door
-        icon: mdi:door-sliding
-        show_state: true
-      - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: cover.ratgdo32_691830_door
+        card_type: pop-up
+        hash: "#garage"
         name: Garage
         icon: mdi:garage
-        show_state: true
-  - type: custom:bubble-card
-    card_type: separator
-    name: Motion Detection
-    icon: mdi:motion-sensor
-  - type: horizontal-stack
-    cards:
+        width_desktop: 450px
+        bg_opacity: 85
+        bg_blur: 14
+        card:
+          type: vertical-stack
+          cards:
+            - type: custom:bubble-card
+              card_type: cover
+              entity: cover.ratgdo32_691830_door
+              name: Garage Door
+              icon_open: mdi:garage-open
+              icon_close: mdi:garage
+              show_state: true
+            - type: custom:bubble-card
+              card_type: button
+              button_type: slider
+              entity: light.ratgdo32_691830_light
+              name: Garage Light
+              icon: mdi:lightbulb
+      - type: custom:alarmo-card
+        entity: alarm_control_panel.alarmo
       - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: binary_sensor.doorbell_motion
-        name: Doorbell
-        icon: mdi:motion-sensor
-        show_state: true
+        card_type: separator
+        name: Locks & Entry
+        icon: mdi:lock
+      - type: horizontal-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: lock.front_door_bolt
+            name: Front Door
+            icon: mdi:door
+            show_state: true
+            tap_action:
+              action: toggle
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: lock.level_bolt_matter
+            name: Back Door
+            icon: mdi:door-sliding
+            show_state: true
+            tap_action:
+              action: toggle
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: lock.level_bolt_matter_2
+            name: Side Garage
+            icon: mdi:door
+            show_state: true
+            tap_action:
+              action: toggle
+          - type: custom:bubble-card
+            card_type: cover
+            entity: cover.ratgdo32_691830_door
+            name: Garage
+            icon_open: mdi:garage-open
+            icon_close: mdi:garage
       - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: binary_sensor.front_camera_motion
-        name: Front
-        icon: mdi:motion-sensor
-        show_state: true
+        card_type: separator
+        name: Cameras
+        icon: mdi:cctv
+      - type: horizontal-stack
+        cards:
+          - type: picture-entity
+            entity: camera.doorbell
+            name: Doorbell
+            camera_view: live
+          - type: picture-entity
+            entity: camera.front_camera
+            name: Front Yard
+            camera_view: live
+          - type: picture-entity
+            entity: camera.driveway
+            name: Driveway
+            camera_view: live
       - type: custom:bubble-card
-        card_type: button
-        button_type: state
-        entity: binary_sensor.driveway_motion
-        name: Driveway
+        card_type: separator
+        name: Entry Sensors
+        icon: mdi:door-open
+      - type: horizontal-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: binary_sensor.door_sensor_door
+            name: Front Door
+            icon: mdi:door
+            show_state: true
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: binary_sensor.door_sensor_door_2
+            name: Back Door
+            icon: mdi:door-sliding
+            show_state: true
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: cover.ratgdo32_691830_door
+            name: Garage
+            icon: mdi:garage
+            show_state: true
+      - type: custom:bubble-card
+        card_type: separator
+        name: Motion Detection
         icon: mdi:motion-sensor
-        show_state: true
-
+      - type: horizontal-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: binary_sensor.doorbell_motion
+            name: Doorbell
+            icon: mdi:motion-sensor
+            show_state: true
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: binary_sensor.front_camera_motion
+            name: Front
+            icon: mdi:motion-sensor
+            show_state: true
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: binary_sensor.driveway_motion
+            name: Driveway
+            icon: mdi:motion-sensor
+            show_state: true
+    card_mod:
+      style: |
+        :host {
+          padding: 0 !important;
+          margin: 0 0 0 -20px !important;
+          width: calc(100% + 20px) !important;
+          max-width: calc(100% + 20px) !important;
+        }
 theme: Visonos
