@@ -537,8 +537,4 @@
   conditions: []
   actions:
   - action: shell_command.git_sync_dashboard
-  - action: persistent_notification.create
-    data:
-      title: Dashboard Synced
-      message: 'Dashboard files updated from GitHub at {{ now().strftime(''%I:%M %p'') }}'
   mode: single
