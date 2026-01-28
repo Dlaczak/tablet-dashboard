@@ -2,6 +2,7 @@ title: Tablet
 button_card_templates: !include button_card_templates_data.yaml
 views:
   - !include home.yaml
+  - !include music.yaml
   - !include security.yaml
   - !include weather.yaml
   - !include server.yaml

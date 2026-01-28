@@ -17,6 +17,7 @@ FILES=(
   server.yaml
   weather.yaml
   printers.yaml
+  music.yaml
   automations.yaml
   scripts.yaml
   button_card_templates_data.yaml

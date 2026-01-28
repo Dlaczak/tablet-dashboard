@@ -1,0 +1,488 @@
+title: Music
+path: music
+icon: mdi:music
+panel: true
+cards:
+  - type: custom:navbar-card
+    desktop:
+      position: bottom
+      min_width: 768
+      show_labels: true
+    mobile:
+      position: bottom
+      show_labels: true
+    routes:
+      - icon: mdi:home-outline
+        icon_selected: mdi:home-assistant
+        url: /lovelace-tablet/home
+        label: Home
+      - icon: mdi:sofa-outline
+        icon_selected: mdi:sofa
+        label: Rooms
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:sofa-outline
+            url: /lovelace-tablet/home#living-room
+            label: Living Room
+          - icon: mdi:silverware-variant
+            url: /lovelace-tablet/home#kitchen
+            label: Kitchen
+          - icon: mdi:bed-king-outline
+            url: /lovelace-tablet/home#master-suite
+            label: Master Suite
+          - icon: mdi:bed-outline
+            url: /lovelace-tablet/home#bedrooms
+            label: Bedrooms
+          - icon: mdi:monitor
+            url: /lovelace-tablet/home#office
+            label: Office
+          - icon: mdi:stairs-down
+            url: /lovelace-tablet/home#basement
+            label: Basement
+          - icon: mdi:tools
+            url: /lovelace-tablet/home#basement-utility
+            label: Basement Utility
+      - icon: mdi:music
+        url: /lovelace-tablet/music
+        label: Music
+        badge:
+          show: >
+            [[[ return states['media_player.living_room'].state === 'playing'
+            ]]]
+          color: var(--green-color)
+        selected: |
+          [[[
+            return location.pathname.includes('/music');
+          ]]]
+      - icon: mdi:shield-outline
+        icon_selected: mdi:security
+        url: /lovelace-tablet/security
+        label: Security
+        badge:
+          show: >
+            [[[ return states['binary_sensor.door_sensor_door'].state === 'on'
+            || states['binary_sensor.door_sensor_door_2'].state === 'on' ]]]
+          color: var(--red-color)
+      - icon: mdi:weather-partly-cloudy
+        url: /lovelace-tablet/weather
+        label: Weather
+      - icon: mdi:dots-horizontal
+        label: More
+        badge:
+          show: |
+            [[[
+              if (states['update.home_assistant_core_update'].state == "on") return true;
+              else if (states['update.home_assistant_supervisor_update'].state == "on") return true;
+              else if (states['sensor.ipad_battery_level'].state < 20) return true;
+              else return false;
+            ]]]
+          color: var(--red-color)
+        tap_action:
+          action: open-popup
+        popup:
+          - icon: mdi:server-outline
+            url: /lovelace-tablet/server
+            label: Server
+          - icon: mdi:cart
+            url: /dashboard-bring/home
+            label: Shopping List
+          - icon: mdi:cog
+            url: /config/dashboard
+            label: Settings
+          - icon: mdi:hammer
+            url: /developer-tools/yaml
+            label: Developer Tools
+          - icon: mdi:printer-3d
+            url: /lovelace-tablet/printers
+            label: Printers
+    styles: |
+      .navbar {
+        --navbar-primary-color: var(--purple-color);
+        background: var(--contrast2);
+      }
+  # ============================================================
+  # HEADER
+  # ============================================================
+  - type: custom:bubble-card
+    card_type: separator
+    name: Music & Media
+    icon: mdi:music
+    styles: |
+      .bubble-separator {
+        font-size: 24px;
+        font-weight: 600;
+      }
+    view_layout:
+      grid-column: span 8
+  # ============================================================
+  # SONOS SPEAKERS
+  # ============================================================
+  - type: custom:bubble-card
+    card_type: separator
+    name: Sonos Speakers
+    icon: mdi:speaker
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: media-player
+    entity: media_player.living_room
+    name: Living Room
+    view_layout:
+      grid-column: span 4
+  - type: custom:bubble-card
+    card_type: media-player
+    entity: media_player.office
+    name: Office
+    view_layout:
+      grid-column: span 4
+  - type: custom:bubble-card
+    card_type: media-player
+    entity: media_player.basement
+    name: Basement
+    view_layout:
+      grid-column: span 4
+  # ============================================================
+  # APPLE TV
+  # ============================================================
+  - type: custom:bubble-card
+    card_type: separator
+    name: Apple TV
+    icon: mdi:apple
+    view_layout:
+      grid-column: span 8
+  - type: custom:bubble-card
+    card_type: media-player
+    entity: media_player.living_room_apple_tv
+    name: Living Room Apple TV
+    view_layout:
+      grid-column: span 4
+  # ============================================================
+  # APPLE TV REMOTE
+  # ============================================================
+  - type: custom:bubble-card
+    card_type: separator
+    name: Remote
+    icon: mdi:remote-tv
+    view_layout:
+      grid-column: span 8
+  - type: grid
+    columns: 3
+    cards:
+      # Row 1: Volume Down, Mute, Volume Up
+      - type: custom:button-card
+        icon: mdi:volume-minus
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "53906750"
+            command: VolumeDown
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        icon: mdi:volume-mute
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "53906750"
+            command: Mute
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        icon: mdi:volume-plus
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "53906750"
+            command: VolumeUp
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      # Row 2: Power, Up, Play/Pause
+      - type: custom:button-card
+        icon: mdi:power
+        entity: remote.harmony_hub
+        show_name: false
+        aspect_ratio: 1/1
+        tap_action:
+          action: call-service
+          service: script.turn_on_tv
+        styles:
+          card:
+            - border-radius: 24px
+            - background: var(--green)
+          icon:
+            - width: 32px
+            - color: var(--black)
+        state:
+          - value: "on"
+            styles:
+              card:
+                - background: var(--red)
+      - type: custom:button-card
+        icon: mdi:chevron-up
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "77485195"
+            command: DirectionUp
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        aspect_ratio: 1/1
+        show_name: false
+        tap_action:
+          action: call-service
+          haptic: medium
+          service: media_player.media_play_pause
+          service_data:
+            entity_id: media_player.apple_tv_4k_2
+        styles:
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+        icon: mdi:pause
+        entity: media_player.apple_tv_4k_2
+        state:
+          - value: paused
+            icon: mdi:play
+            styles:
+              card:
+                - background-color: var(--green)
+              icon:
+                - color: var(--black)
+          - value: playing
+            styles:
+              card:
+                - background-color: var(--yellow)
+              icon:
+                - color: var(--black)
+      # Row 3: Left, Select, Right
+      - type: custom:button-card
+        icon: mdi:chevron-left
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "77485195"
+            command: DirectionLeft
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        icon: mdi:circle-outline
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "77485195"
+            command: Select
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        icon: mdi:chevron-right
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "77485195"
+            command: DirectionRight
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      # Row 4: Back, Down, Home
+      - type: custom:button-card
+        icon: mdi:arrow-left
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "53906339"
+            command: Back
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        icon: mdi:chevron-down
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "77485195"
+            command: DirectionDown
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+      - type: custom:button-card
+        icon: mdi:home-variant
+        aspect_ratio: 1/1
+        entity: media_player.apple_tv_4k_2
+        show_name: false
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          service_data:
+            device: "77485195"
+            command: Home
+            entity_id: remote.harmony_hub
+        styles:
+          card:
+            - border-radius: 24px
+            - background-color: var(--contrast2)
+          icon:
+            - width: 32px
+            - color: var(--contrast8)
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: var(--contrast20)
+    view_layout:
+      grid-column: span 4
+
+type: custom:grid-layout
+layout:
+  grid-template-columns: repeat(8, 1fr)
+  grid-template-rows: auto
+  margin: 0
+  padding: 0
+  mediaquery:
+    "(max-width: 600px)":
+      grid-template-columns: repeat(4, 1fr)
+    "(max-width: 1024px) and (min-width: 601px)":
+      grid-template-columns: repeat(6, 1fr)
+card_mod:
+  style: |
+    :host {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+theme: Visonos
