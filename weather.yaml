@@ -282,9 +282,8 @@ type: custom:grid-layout
 layout:
   grid-template-columns: repeat(8, 1fr)
   grid-template-rows: auto
-  margin: 0 0 0 -132px
+  margin: 0
   padding: 0
-  width: calc(100% + 132px)
   mediaquery:
     "(max-width: 600px)":
       grid-template-columns: repeat(4, 1fr)
@@ -294,8 +293,8 @@ card_mod:
   style: |
     :host {
       padding: 0 !important;
-      margin: 0 0 0 -132px !important;
-      width: calc(100% + 132px) !important;
-      max-width: calc(100% + 132px) !important;
+      margin: 0 0 0 -20px !important;
+      width: calc(100% + 20px) !important;
+      max-width: calc(100% + 20px) !important;
     }
 theme: Visonos
