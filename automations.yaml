@@ -538,3 +538,46 @@
   actions:
   - action: shell_command.git_sync_dashboard
   mode: single
+# ------------------------------------------------------------
+# Water Leak Detection Alert
+# ------------------------------------------------------------
+- id: water_leak_alert
+  alias: Water Leak Alert
+  description: Shows popup and sends phone notification when any water sensor detects moisture
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.fridge_leak_sensor_moisture
+    - binary_sensor.leak_sensor_moisture_2
+    - binary_sensor.laundry_leak_sensor_moisture
+    - binary_sensor.leak_sensor_moisture
+    to: 'on'
+  conditions: []
+  actions:
+  - action: browser_mod.popup
+    data:
+      title: Water Leak Detected!
+      content:
+        type: markdown
+        content: >-
+          ## ⚠️ Water Leak Detected
+
+          **Sensor:** {{ trigger.to_state.name }}
+
+          **Location:** {{ trigger.to_state.attributes.friendly_name | default(trigger.to_state.name) }}
+
+          **Time:** {{ now().strftime('%I:%M %p') }}
+      size: wide
+      right_button: Dismiss
+  - action: notify.mobile_app_davids_iphone
+    data:
+      title: '⚠️ Water Leak Detected!'
+      message: '{{ trigger.to_state.name }} detected water at {{ now().strftime(''%I:%M %p'') }}'
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1.0
+  mode: parallel
+  max: 4

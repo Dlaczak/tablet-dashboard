@@ -575,7 +575,7 @@ cards:
 
 type: custom:grid-layout
 layout:
-  grid-template-columns: 33.3% 33.3% 33.3%
+  grid-template-columns: 1fr 1fr 1fr
   grid-template-rows: auto
   grid-gap: 16px
   grid-template-areas: |
