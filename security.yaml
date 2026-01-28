@@ -277,4 +277,8 @@ cards:
         icon: mdi:motion-sensor
         show_state: true
 
+type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr
+  grid-template-rows: auto
 theme: Visonos
