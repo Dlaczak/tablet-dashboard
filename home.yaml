@@ -3557,4 +3557,11 @@ card_mod:
       padding: 0 !important;
       margin: 0 !important;
     }
+    :host > #layout {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    :host > #layout > * {
+      margin: 0 !important;
+    }
 theme: Visonos
