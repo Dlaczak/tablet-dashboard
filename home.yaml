@@ -576,48 +576,24 @@ cards:
           pagination:
             type: bullets
         cards:
-          - type: picture-entity
-            entity: camera.doorbell
-            camera_view: live
-            show_state: false
-            show_name: false
-            card_mod:
-              style: |
-                :host {
-                  aspect-ratio: 16/9;
-                  overflow: hidden;
-                }
-                ha-card {
-                  height: 100%;
-                }
-          - type: picture-entity
-            entity: camera.front_camera
-            camera_view: live
-            show_state: false
-            show_name: false
-            card_mod:
-              style: |
-                :host {
-                  aspect-ratio: 16/9;
-                  overflow: hidden;
-                }
-                ha-card {
-                  height: 100%;
-                }
-          - type: picture-entity
-            entity: camera.driveway
-            camera_view: live
-            show_state: false
-            show_name: false
-            card_mod:
-              style: |
-                :host {
-                  aspect-ratio: 16/9;
-                  overflow: hidden;
-                }
-                ha-card {
-                  height: 100%;
-                }
+          - type: custom:frigate-card
+            cameras:
+              - camera_entity: camera.doorbell
+            dimensions:
+              aspect_ratio: 16:9
+              aspect_ratio_mode: static
+          - type: custom:frigate-card
+            cameras:
+              - camera_entity: camera.front_camera
+            dimensions:
+              aspect_ratio: 16:9
+              aspect_ratio_mode: static
+          - type: custom:frigate-card
+            cameras:
+              - camera_entity: camera.driveway
+            dimensions:
+              aspect_ratio: 16:9
+              aspect_ratio_mode: static
     view_layout:
       grid-area: Cameras
   - type: vertical-stack
