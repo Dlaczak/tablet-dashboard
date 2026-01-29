@@ -569,33 +569,47 @@ cards:
         name: Cameras
         icon: mdi:cctv
       - type: custom:swipe-card
-        card_width: 100%
         parameters:
           slidesPerView: 1
-          spaceBetween: 16
+          spaceBetween: 8
           pagination:
             type: bullets
         cards:
-          - type: picture-glance
+          - type: picture-entity
             entity: camera.doorbell
             camera_view: live
             show_state: false
-            aspect_ratio: 16:9
-          - type: picture-glance
+            show_name: false
+          - type: picture-entity
             entity: camera.front_camera
             camera_view: live
             show_state: false
-            aspect_ratio: 16:9
-          - type: picture-glance
+            show_name: false
+          - type: picture-entity
             entity: camera.driveway
             camera_view: live
             show_state: false
-            aspect_ratio: 16:9
+            show_name: false
         card_mod:
           style: |
             :host {
-              max-height: 250px;
+              max-height: 180px;
+              overflow: hidden;
             }
+            ha-card {
+              max-height: 180px;
+              overflow: hidden;
+            }
+            ha-card img {
+              object-fit: cover;
+              height: 180px;
+            }
+    card_mod:
+      style: |
+        :host {
+          max-width: 100%;
+          overflow: hidden;
+        }
     view_layout:
       grid-area: Cameras
   - type: vertical-stack
