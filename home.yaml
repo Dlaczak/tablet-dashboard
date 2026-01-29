@@ -3546,36 +3546,15 @@ layout:
   grid-template-columns: 1fr 1fr 1fr
   grid-template-rows: auto
   grid-gap: 16px
-  margin: 0
-  padding: 0
   grid-template-areas: |
     "Header Header Header"
     "Weather Speakers Cameras"
     "Overview Climate Security"
     "Hidden Hidden Hidden"
 card_mod:
-  style:
-    hui-panel-view $: |
-      #columns {
-        padding: 0 !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-      }
-    .: |
-      :host {
-        touch-action: pan-y !important;
-        overscroll-behavior-x: none !important;
-        padding: 0 !important;
-        margin: 0 0 0 -20px !important;
-        width: calc(100% + 20px) !important;
-        max-width: calc(100% + 20px) !important;
-      }
-      :host > #layout {
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-      }
-      :host > #layout > * {
-        margin: 0 !important;
-      }
+  style: |
+    :host {
+      touch-action: pan-y !important;
+      overscroll-behavior-x: none !important;
+    }
 theme: Visonos
