@@ -1,6 +1,6 @@
-title: Music
-path: music
-icon: mdi:music
+title: Media
+path: media
+icon: mdi:television
 panel: true
 cards:
   - type: custom:navbar-card
@@ -43,9 +43,10 @@ cards:
           - icon: mdi:tools
             url: /lovelace-tablet/home#basement-utility
             label: Basement Utility
-      - icon: mdi:music
-        url: /lovelace-tablet/music
-        label: Music
+      - icon: mdi:television
+        icon_selected: mdi:television-classic
+        url: /lovelace-tablet/media
+        label: Media
         badge:
           show: >
             [[[ return states['media_player.living_room'].state === 'playing'
@@ -53,7 +54,7 @@ cards:
           color: var(--green-color)
         selected: |
           [[[
-            return location.pathname.includes('/music');
+            return location.pathname.includes('/media');
           ]]]
       - icon: mdi:shield-outline
         icon_selected: mdi:security

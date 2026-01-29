@@ -55,9 +55,10 @@ cards:
           - icon: mdi:tools
             url: /lovelace-tablet/home#basement-utility
             label: Basement Utility
-      - icon: mdi:music
-        url: /lovelace-tablet/music
-        label: Music
+      - icon: mdi:television
+        icon_selected: mdi:television-classic
+        url: /lovelace-tablet/media
+        label: Media
         badge:
           show: >
             [[[ return states['media_player.living_room'].state === 'playing'
