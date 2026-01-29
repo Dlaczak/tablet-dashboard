@@ -576,24 +576,26 @@ cards:
           pagination:
             type: bullets
         cards:
-          - type: picture-entity
+          - type: picture-glance
             entity: camera.doorbell
             camera_view: live
             show_state: false
-            show_name: false
             aspect_ratio: 16:9
-          - type: picture-entity
+          - type: picture-glance
             entity: camera.front_camera
             camera_view: live
             show_state: false
-            show_name: false
             aspect_ratio: 16:9
-          - type: picture-entity
+          - type: picture-glance
             entity: camera.driveway
             camera_view: live
             show_state: false
-            show_name: false
             aspect_ratio: 16:9
+        card_mod:
+          style: |
+            :host {
+              max-height: 250px;
+            }
     view_layout:
       grid-area: Cameras
   - type: vertical-stack
