@@ -542,6 +542,7 @@
   - action: automation.reload
   - action: script.reload
   - action: homeassistant.reload_core_config
+  - action: lovelace.reload_resources
   mode: single
 # ------------------------------------------------------------
 # Water Leak Detection Alert

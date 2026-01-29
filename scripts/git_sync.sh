@@ -62,4 +62,10 @@ for d in "${DIRS[@]}"; do
   fi
 done
 
+# Clean up renamed/removed files
+if [ -f "$CONFIG_DIR/music.yaml" ]; then
+  rm "$CONFIG_DIR/music.yaml"
+  logger -t "$LOG_TAG" "Removed deprecated music.yaml"
+fi
+
 logger -t "$LOG_TAG" "Sync complete: $COPIED items updated"
