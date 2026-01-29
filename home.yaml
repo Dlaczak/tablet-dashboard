@@ -568,29 +568,20 @@ cards:
         card_type: separator
         name: Cameras
         icon: mdi:cctv
-      - type: custom:swipe-card
-        card_width: 100%
-        parameters:
-          slidesPerView: 1
-          spaceBetween: 16
-          pagination:
-            type: bullets
+      - type: horizontal-stack
         cards:
           - type: picture-entity
             entity: camera.doorbell
             camera_view: live
             show_state: false
-            show_name: false
           - type: picture-entity
             entity: camera.front_camera
             camera_view: live
             show_state: false
-            show_name: false
           - type: picture-entity
             entity: camera.driveway
             camera_view: live
             show_state: false
-            show_name: false
     view_layout:
       grid-area: Cameras
   - type: vertical-stack
