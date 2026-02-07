@@ -102,200 +102,236 @@ cards:
         --navbar-primary-color: var(--purple-color);
         background: var(--contrast2);
       }
-  - type: custom:clock-weather-card
+  # ============================================================
+  # MAIN CONTENT - Radar Map with Weather Overlays
+  # ============================================================
+  - type: custom:stack-in-card
+    mode: vertical
+    cards:
+      # Radar Map Background (full width)
+      - type: iframe
+        url: >-
+          https://embed.windy.com/embed2.html?lat=39.0&lon=-77.0&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1
+        aspect_ratio: "21:9"
+        card_mod:
+          style: |
+            :host {
+              --ha-card-background: transparent;
+              --ha-card-border-width: 0;
+            }
+            ha-card {
+              background: transparent !important;
+              border: none !important;
+            }
+    card_mod:
+      style: |
+        ha-card {
+          background: transparent !important;
+          border: none !important;
+          overflow: visible !important;
+          position: relative;
+        }
+    view_layout:
+      grid-column: span 8
+      grid-row: span 2
+  # ============================================================
+  # WEATHER OVERLAY CARD - Top Left
+  # ============================================================
+  - type: custom:button-card
     entity: weather.openweathermap
-    sun_entity: sun.sun
-    temperature_sensor: sensor.openweathermap_temperature
-    humidity_sensor: sensor.openweathermap_humidity
-    weather_icon_type: line
-    animated_icon: true
-    forecast_rows: 5
-    time_format: 12
+    show_name: false
+    show_icon: false
+    styles:
+      card:
+        - background: "rgba(0, 0, 0, 0.7)"
+        - backdrop-filter: blur(10px)
+        - border-radius: 16px
+        - padding: 16px
+        - position: absolute
+        - top: 80px
+        - left: 16px
+        - width: 280px
+        - z-index: 10
+    custom_fields:
+      location: |
+        [[[
+          return `<div style="font-size: 14px; color: #aaa; margin-bottom: 4px;">Your Location</div>`;
+        ]]]
+      temp: |
+        [[[
+          const temp = states['sensor.openweathermap_temperature']?.state || '--';
+          return `<div style="font-size: 48px; font-weight: 300; color: white;">${Math.round(temp)}°</div>`;
+        ]]]
+      condition: |
+        [[[
+          const condition = entity.state || 'Unknown';
+          return `<div style="font-size: 14px; color: #aaa; text-transform: uppercase;">${condition}</div>`;
+        ]]]
+      details: |
+        [[[
+          const humidity = states['sensor.openweathermap_humidity']?.state || '--';
+          const wind = states['sensor.openweathermap_wind_speed']?.state || '--';
+          const feels = states['sensor.openweathermap_feels_like_temperature']?.state || '--';
+          return `
+            <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #ccc;">
+              <div>
+                <div style="color: #888;">Humidity</div>
+                <div>${humidity}%</div>
+              </div>
+              <div>
+                <div style="color: #888;">Wind</div>
+                <div>${Math.round(wind)} mph</div>
+              </div>
+              <div>
+                <div style="color: #888;">Feels Like</div>
+                <div>${Math.round(feels)}°</div>
+              </div>
+            </div>
+          `;
+        ]]]
     view_layout:
-      grid-column: span 8
-  - type: custom:bubble-card
-    card_type: separator
-    name: Current Conditions
-    icon: mdi:weather-partly-cloudy
+      grid-column: 1 / 4
+      grid-row: 1
+  # ============================================================
+  # TOP BAR - Quick Stats
+  # ============================================================
+  - type: custom:button-card
+    show_name: false
+    show_icon: false
+    styles:
+      card:
+        - background: "rgba(0, 0, 0, 0.7)"
+        - backdrop-filter: blur(10px)
+        - border-radius: 12px
+        - padding: "8px 16px"
+        - position: absolute
+        - top: 16px
+        - right: 16px
+        - z-index: 10
+    custom_fields:
+      stats: |
+        [[[
+          const sunrise = states['sensor.sun_next_rising']?.state || '06:00';
+          const sunset = states['sensor.sun_next_setting']?.state || '18:00';
+          const uv = states['sensor.openweathermap_uv_index']?.state || '0';
+          const pressure = states['sensor.openweathermap_pressure']?.state || '--';
+
+          // Format times
+          const formatTime = (isoString) => {
+            try {
+              const date = new Date(isoString);
+              return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            } catch {
+              return isoString;
+            }
+          };
+
+          return `
+            <div style="display: flex; gap: 24px; align-items: center; font-size: 13px; color: white;">
+              <div style="text-align: center;">
+                <div style="color: #f9a825;">☀ ${formatTime(sunrise)}</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="color: #ff7043;">☽ ${formatTime(sunset)}</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="color: #aaa; font-size: 10px;">UV</div>
+                <div>${Math.round(uv)}</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="color: #aaa; font-size: 10px;">hPa</div>
+                <div>${Math.round(pressure)}</div>
+              </div>
+            </div>
+          `;
+        ]]]
     view_layout:
-      grid-column: span 8
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.openweathermap_temperature
-    name: Temperature
-    icon: mdi:thermometer
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.openweathermap_feels_like_temperature
-    name: Feels Like
-    icon: mdi:thermometer-lines
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.openweathermap_humidity
-    name: Humidity
-    icon: mdi:water-percent
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.openweathermap_wind_speed
-    name: Wind
-    icon: mdi:weather-windy
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.openweathermap_pressure
-    name: Pressure
-    icon: mdi:gauge
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.openweathermap_uv_index
-    name: UV Index
-    icon: mdi:sun-wireless
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: separator
-    name: 7-Day Forecast
-    icon: mdi:calendar-week
-    view_layout:
-      grid-column: span 8
-  - type: weather-forecast
+      grid-column: 5 / 9
+      grid-row: 1
+  # ============================================================
+  # FORECAST STRIP - Bottom
+  # ============================================================
+  - type: custom:button-card
     entity: weather.openweathermap
-    forecast_type: daily
-    show_current: false
+    show_name: false
+    show_icon: false
+    styles:
+      card:
+        - background: "rgba(0, 0, 0, 0.7)"
+        - backdrop-filter: blur(10px)
+        - border-radius: 12px
+        - padding: 12px
+        - position: absolute
+        - bottom: 80px
+        - left: 16px
+        - right: 16px
+        - z-index: 10
+    custom_fields:
+      forecast: |
+        [[[
+          const forecast = entity.attributes.forecast || [];
+          const hourly = forecast.slice(0, 6);
+
+          const getIcon = (condition) => {
+            const icons = {
+              'sunny': '☀️',
+              'clear-night': '🌙',
+              'partlycloudy': '⛅',
+              'cloudy': '☁️',
+              'rainy': '🌧️',
+              'snowy': '❄️',
+              'fog': '🌫️',
+              'lightning': '⛈️',
+              'lightning-rainy': '⛈️',
+              'windy': '💨',
+            };
+            return icons[condition] || '🌤️';
+          };
+
+          const formatHour = (datetime) => {
+            try {
+              const date = new Date(datetime);
+              return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+            } catch {
+              return '--';
+            }
+          };
+
+          let html = '<div style="display: flex; justify-content: space-around; color: white;">';
+
+          hourly.forEach((item, i) => {
+            const temp = Math.round(item.temperature);
+            const icon = getIcon(item.condition);
+            const time = formatHour(item.datetime);
+
+            html += `
+              <div style="text-align: center; min-width: 60px;">
+                <div style="font-size: 11px; color: #aaa;">${time}</div>
+                <div style="font-size: 24px; margin: 4px 0;">${icon}</div>
+                <div style="font-size: 14px; font-weight: 500;">${temp}°</div>
+              </div>
+            `;
+          });
+
+          html += '</div>';
+          return html;
+        ]]]
     view_layout:
       grid-column: span 8
-  - type: custom:bubble-card
-    card_type: separator
-    name: Air Quality
-    icon: mdi:air-filter
-    view_layout:
-      grid-column: span 8
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.air_quality_index
-    name: AQI
-    icon: mdi:leaf
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.allergy_index_today
-    name: Allergy
-    icon: mdi:flower-pollen
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.asthma_index_today
-    name: Asthma
-    icon: mdi:lungs
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: separator
-    name: Weather Alerts
-    icon: mdi:alert-circle
-    view_layout:
-      grid-column: span 8
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.nws_alerts_alerts
-    name: Active Alerts
-    icon: mdi:alert
-    show_state: true
-    view_layout:
-      grid-column: span 4
-  - type: custom:bubble-card
-    card_type: separator
-    name: Indoor Climate
-    icon: mdi:home-thermometer
-    view_layout:
-      grid-column: span 8
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.ecowitt_temperature_indoor
-    name: Indoor Temp
-    icon: mdi:thermometer
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.ecowitt_humidity_humidityin
-    name: Indoor Humidity
-    icon: mdi:water-percent
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.living_room_temperature
-    name: Living Room
-    icon: mdi:sofa
-    show_state: true
-    view_layout:
-      grid-column: span 2
-  - type: custom:bubble-card
-    card_type: separator
-    name: Radar
-    icon: mdi:radar
-    view_layout:
-      grid-column: span 8
-  - type: iframe
-    url: >-
-      https://embed.windy.com/embed2.html?lat=39.0&lon=-77.0&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1
-    aspect_ratio: "16:9"
-    view_layout:
-      grid-column: span 8
+      grid-row: 2
 
 type: custom:grid-layout
 layout:
   grid-template-columns: repeat(8, 1fr)
-  grid-template-rows: auto
+  grid-template-rows: 1fr auto
+  height: calc(100vh - 120px)
   margin: 0
   padding: 0
-  mediaquery:
-    "(max-width: 600px)":
-      grid-template-columns: repeat(4, 1fr)
-    "(max-width: 1024px) and (min-width: 601px)":
-      grid-template-columns: repeat(6, 1fr)
+  position: relative
 card_mod:
   style: |
     :host {
       padding: 0 !important;
-      margin: 0 0 0 -20px !important;
-      width: calc(100% + 20px) !important;
-      max-width: calc(100% + 20px) !important;
+      margin: 0 !important;
     }
 theme: Visonos
